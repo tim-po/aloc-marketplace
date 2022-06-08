@@ -3,12 +3,12 @@
 import React from "react";
 
 import StandardAppContainer from "./Standard/StandardAppContainer";
+import Main from "./pages/Main";
 
 export const App = () => {
   return (
-      <StandardAppContainer forcedLocale={'ru'}>
-          Put your content here
-          {/* TODO: add your application content here*/}
+      <StandardAppContainer showLocalisationControl={true} isDarkBG={false}>
+          <Main />
       </StandardAppContainer>
   );
 };

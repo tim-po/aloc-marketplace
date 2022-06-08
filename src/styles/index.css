@@ -16,6 +16,7 @@
     font-family: "Montserrat-ExtraBold";
     src: local("Montserrat-ExtraBold"),
     url(/fonts/Montserrat/Montserrat-ExtraBold.ttf) format("truetype");
+    font-weight: 900;
 }
 
 @tailwind components;
@@ -24,7 +25,7 @@ body {
     font-family: "Montserrat";
     font-style: normal;
     color: white;
-    background: black;
+    background: white;
 }
 
 header {
@@ -60,6 +61,28 @@ header {
             rgba(50, 187, 129, 0.2) 0%,
             rgba(41, 128, 164, 0.2) 45%,
             rgba(24, 25, 51, 0.2) 100%
+    );
+    color: white;
+    min-height: 100vh;
+}
+
+.main-gradient-light-hard {
+    background: radial-gradient(
+            circle,
+            rgba(50, 187, 129, 1) 0%,
+            rgba(41, 128, 164, 1) 45%,
+            rgba(24, 25, 51, 1) 100%
+    );
+    color: white;
+    min-height: 100vh;
+}
+
+.main-gradient-light {
+    background: radial-gradient(
+            circle,
+            rgb(36, 131, 92) 0%,
+            rgb(27, 88, 96) 45%,
+            rgb(24, 44, 51) 100%
     );
     color: white;
     min-height: 100vh;
