@@ -23,6 +23,12 @@
     margin-bottom: 16px;
 }
 
+.nft-left{
+    position: absolute;
+    left: 12px;
+    top: 6px
+}
+
 .nft-card-button{
     position: absolute;
     width: 100%;
@@ -93,4 +99,8 @@
 
 .nft-data.open{
     height: 180px !important;
+}
+
+.nft-data.collection.open{
+    height: 140px !important;
 }

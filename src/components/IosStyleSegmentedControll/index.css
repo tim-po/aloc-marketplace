@@ -1,0 +1,36 @@
+.IosStyleRadioButton {
+    height: 40px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    position: relative;
+    /*box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);*/
+    padding: 2px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.selectableButton {
+    transition: all 0.3s;
+    font-size: 14px;
+    background: none;
+    border: none;
+    z-index: 1;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    outline: none !important;
+}
+.selector-bg {
+    transition: all 0.3s;
+    position: absolute;
+    top: 2px;
+    height: calc(100% - 4px);
+    z-index: 0;
+    background: rgb(50, 187, 129);
+    border-radius: 6px;
+}
+.selectableButtonSelected {
+    color: white;
+}

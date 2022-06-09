@@ -12,6 +12,7 @@ import NFTTile from "../NFTTile";
 
 type NftProjectCointainerPropType = {
     // You should declare props like this, delete this if you don't need props
+    dysplayingCollection: boolean,
     name: string,
     nfts: NFT[]
     // somePropWithDefaultOption?: string
@@ -23,7 +24,7 @@ const NftProjectCointainerDefaultProps = {
 }
 
 const NftProjectContainer = (props: NftProjectCointainerPropType) => {
-    const {nfts, name} = props
+    const {nfts, name, dysplayingCollection} = props
     const {locale} = useContext(LocaleContext)
 
     return (
@@ -31,7 +32,7 @@ const NftProjectContainer = (props: NftProjectCointainerPropType) => {
             <h3 className={'project-header'}>{name}</h3>
             <div className={'nfts-flex'}>
                 {nfts.map(nft => (
-                    <NFTTile nft={nft} />
+                    <NFTTile dysplayingCollection={dysplayingCollection} nft={nft} />
                 ))}
             </div>
         </div>

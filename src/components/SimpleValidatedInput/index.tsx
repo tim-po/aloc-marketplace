@@ -69,6 +69,7 @@ const SimpleValidatedInput = (props: SimpleValidatedInputPropType) => {
             onBlur(e)
         }
         if(validationFunction && !validationFunction(e.target.value)){
+            console.log(e.target.value)
             setIsValid(false)
             onValidationChange(false)
         }
