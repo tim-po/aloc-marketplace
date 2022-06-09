@@ -32,7 +32,7 @@ const NftProjectContainer = (props: NftProjectCointainerPropType) => {
             <h3 className={'project-header'}>{name}</h3>
             <div className={'nfts-flex'}>
                 {nfts.map(nft => (
-                    <NFTTile dysplayingCollection={dysplayingCollection} nft={nft} />
+                    <NFTTile key={`${nft.name}-${nft.price}`} dysplayingCollection={dysplayingCollection} nft={nft} />
                 ))}
             </div>
         </div>

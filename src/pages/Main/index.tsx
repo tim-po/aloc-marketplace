@@ -81,10 +81,20 @@ const Main = () => {
       await marketplaceContract.methods.mintAndAllocate(projectId, amount, email).send({from: account})
     }
 
-
     async function getAllProjects(){
-        const NFTArrayFromContract = [...mockNfts]
-            // await marketplaceContract.methods.projects(id).call()
+        const NFTArrayFromContract: NFT[] = []
+        for (let i = 0; i < 99999; i++) {
+            let newProject: NFT
+            try {
+                newProject = await marketplaceContract.methods.projects(i).call()
+            } catch {
+                break
+            }
+            console.log(newProject)
+            NFTArrayFromContract.push(newProject)
+        }
+        // const NFTArrayFromContract = [...mockNfts]
+        //     // await marketplaceContract.methods.projects(id).call()
 
         setAllNFTs(NFTArrayFromContract)
         const newProjects: ProjectsDict = {}

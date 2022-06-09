@@ -9,6 +9,9 @@ import FastAverageColor from "fast-average-color";
 import SimpleValidatedInput from "../SimpleValidatedInput";
 import {isNumber} from "lodash";
 import Spinner from "../../Standard/components/Spinner";
+import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
+import {useWeb3React} from "@web3-react/core";
+import {useBUSDContract} from "../../Standard/hooks/useCommonContracts";
 
 // CONSTANTS
 const mockImage = 'https://images.unsplash.com/photo-1632516643720-e7f5d7d6ecc9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=711&q=80'
@@ -29,13 +32,17 @@ const NFTTileDefaultProps = {
 
 const NFTTile = (props: NFTTilePropType) => {
     const {nft, dysplayingCollection} = props
+    const {account} = useWeb3React()
     const {locale} = useContext(LocaleContext)
     const imgRef = React.createRef<HTMLImageElement>()
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [isFormForcedOpen, setIsFormForcedOpen] = useState(false)
+    const marketplaceContract = useMarketplaceContract()
+    const busdContract = useBUSDContract()
 
     const [email, setEmail] = useState<string | undefined>(undefined)
     const [emailValid, setEmailValid] = useState(false)
+    const [allowance, setAllowance] = useState(0)
 
     const [transferAdress, setTransferAdress] = useState<string | undefined>(undefined)
     const [transferAdressValid, setTransferAdressValid] = useState(false)
@@ -52,6 +59,13 @@ const NFTTile = (props: NFTTilePropType) => {
         allocationAmountBusd != undefined &&
         email != '' &&
         allocationAmountBusd != ''
+
+    const getAllowance = async () => {
+        return await busdContract
+            .methods
+            .allowance(account, marketplaceContract)
+            .call();
+    }
 
     function allocate() {
         if(isValid){
