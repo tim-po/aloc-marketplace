@@ -87,7 +87,9 @@ const NFTTile = (props: NFTTilePropType) => {
                 style={{position: 'relative'}}
             >
                 <img ref={imgRef} className={'nft-artwork'} src={mockImage}/>
-                <div className={'nft-left'}>{`Only ${nft.limit - nft.totalBought} left`}</div>
+                {!dysplayingCollection &&
+                    <div className={'nft-left'}>{`Only ${nft.limit - nft.totalBought} left`}</div>
+                }
                 <div
                     className={`nft-data ${dysplayingCollection ? 'collection': ''} ${isFormOpen ? 'open': ''}`}
                     onMouseEnter={() => setIsFormOpen(true)}
