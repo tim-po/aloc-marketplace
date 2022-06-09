@@ -6,6 +6,8 @@ import {BigNumber} from "bignumber.js";
 import {NFT, ProjectsDict} from "../../types";
 import NftProjectContainer from "../../components/NftProjectCointainer";
 import './index.css'
+import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
+import {useWeb3React} from "@web3-react/core";
 
 // CONSTANTS
 
@@ -54,9 +56,27 @@ const mockNfts = [
 
 const Main = () => {
     const {locale} = useContext(LocaleContext)
-
+    const {account} = useWeb3React()
     const [allProjects, setAllProjects] = useState<ProjectsDict>({})
     const [allNFTs, setAllNFTs] = useState<NFT[]>([])
+    const [projectBalance, setProjectBalance] = useState<number>(0)
+    const [currentNFTData, setCurrentNFTData] = useState()
+    const marketplaceContract = useMarketplaceContract()
+
+    async function getProjectBalance(id: number) {
+      const projectBalance = await marketplaceContract.methods.balanceOf(account, id).call()
+      setProjectBalance(projectBalance)
+    }
+
+    async function getNftData(id: number) {
+      const nftData = await marketplaceContract.methods.nftData(id, account).call()
+      setCurrentNFTData(nftData)
+    }
+
+    async function mintAndAllocate(projectId: number, amount: number, email: string) {
+      await marketplaceContract.methods.mintAndAllocate(projectId, amount, email).send({from: account})
+    }
+
 
     function getAllProjects(){
         const NFTArrayFromContract = [...mockNfts]
