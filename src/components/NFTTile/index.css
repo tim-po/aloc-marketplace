@@ -4,81 +4,24 @@
     border-radius: 20px;
     overflow: hidden;
     /*border: 1px solid white;*/
-    background: rgba(0, 0, 0, 0.2);
     /*cursor: none;*/
     transform-origin: 50% 50%;
+    display: flex;
+    height: 340px;
+    flex-direction: column;
 
     transform: translateX(0) translateY(0);
     box-shadow: 0 0 0px rgba(255, 255, 255, 0.2);
     max-width: max-content;
 }
 
-.nft-modal{
-    transition: all 0.5s;
-    position: fixed;
-    border-radius: 20px;
-    overflow: hidden;
-    background: gray;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    z-index: 100;
-    padding: 0px;
+.NFTTile:hover .nft-data{
+    height: 60px;
 }
 
-.nft-modal.active{
-    width: 500px;
-    height: 500px;
-    top: calc(50% - 250px);
-    left: calc(50% - 250px);
-    padding: 20px;
+.nft-price{
+    margin-bottom: 16px;
 }
-
-.nft-modal-header{
-    font-size: 30px;
-}
-
-.by-nft-dialog{
-    transition: all 0.3s;
-    position: absolute;
-    top: 20px;
-    width: 100%;
-    border-radius: 20px;
-    padding: 20px;
-    background: white;
-
-}
-
-.by-nft-dialog.active{
-    top: calc(100% + 8px);
-}
-
-
-.nft-modal-close-button{
-    transition: background-color 0.5s;
-    background: rgba(0, 0, 0, 0);
-    position: absolute;
-    padding: 0;
-    margin: 0;
-    outline: none !important;
-    border: none;
-    width: 0;
-    height: 0;
-    z-index: 5;
-}
-
-.nft-modal-close-button.active{
-    background: rgba(0, 0, 0, 0.2);
-    width: 100vw;
-    height: 100%;
-    top: 0;
-    left: 0;
-}
-
-/*.NFTTile:hover{*/
-/*    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);*/
-/*}*/
 
 .nft-card-button{
     position: absolute;
@@ -87,25 +30,67 @@
     top: 0;
     left: 0;
     outline: none !important;
-}
-
-.bg-blur{
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    filter: blur(30px);
+    z-index: 8;
 }
 
 .nft-artwork{
     width: 300px;
-    height: 300px;
+    height: 320px;
     overflow: hidden;
-    object-fit: fill;
+    object-fit: cover;
+    z-index: -1;
 }
 
 .nft-data{
+    transition: all 0.5s;
+    border-radius: 10px;
+    overflow: hidden;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     padding: 8px;
+    height: 36px;
+    transform: translateY(-10px);
+    z-index: 10;
+}
+
+.force-close-button{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    outline: none !important;
+    border: none;
+    padding: 0;
+}
+
+.allocate-button{
+    transition: all 0.2s;
+    border: none;
+    outline: none !important;
+    margin-top: 4px;
+    border-radius: 8px;
+    background: rgb(31, 189, 122);
+    padding: 6px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.allocate-button.not-valid{
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.spinner-container{
+    position: absolute;
+    right: 10px;
+}
+
+.nft-data.open{
+    height: 180px !important;
 }

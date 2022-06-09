@@ -1,0 +1,29 @@
+.SimpleValidatedInput{
+    outline: none !important;
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 4px;
+    /*margin-top: 8px;*/
+    color: white;
+    padding-right: 8px;
+    padding-left: 8px;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.validation-error-tooltip{
+    transition: all 0.3s;
+    position: absolute;
+    top: calc(100% - 18px);
+    left: 0;
+    color: rgba(255, 29, 94, 0);
+    max-width: 100%;
+    font-size: 12px;
+    z-index: -1;
+}
+
+.validation-error-tooltip.active{
+    top: calc(100% - 18px);
+    color: rgba(255, 29, 94, 1);
+    z-index: 1;
+}
