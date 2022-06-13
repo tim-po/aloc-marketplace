@@ -1,3 +1,3 @@
 export const getAllocationMarketplaceContract = () => {
-  return '0x646ffFdd31590fD9370FED3120c7f245633B8e06'
+  return '0xd5929c91879eb58667AB5E34ba57DBc8CbAD3Cc3'
 }

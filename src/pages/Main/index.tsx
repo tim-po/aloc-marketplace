@@ -9,6 +9,7 @@ import './index.css'
 import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
 import IosStyleSegmentedControll from "../../components/IosStyleSegmentedControll";
+import {useWeb3} from "../../Standard/hooks/useCommonContracts";
 
 // CONSTANTS
 
@@ -59,18 +60,15 @@ const Main = () => {
     const {locale} = useContext(LocaleContext)
     const {account} = useWeb3React()
     const [allProjects, setAllProjects] = useState<ProjectsDict>({})
+    const [allProjectsById, setAllProjectsById] = useState<{[key: string]: string}>({})
     const [allNFTs, setAllNFTs] = useState<NFT[]>([])
 
     const [dysplayingCollection, setDysplayingCollection] = useState(false)
 
-    const [projectBalance, setProjectBalance] = useState<number>(0)
+    // const [projectBalance, setProjectBalance] = useState<number>(0)
     const [currentNFTData, setCurrentNFTData] = useState()
     const marketplaceContract = useMarketplaceContract()
-
-    async function getProjectBalance(id: number) {
-      const projectBalance = await marketplaceContract.methods.balanceOf(account, id).call()
-      setProjectBalance(projectBalance)
-    }
+    const web3 = useWeb3();
 
     async function getNftData(id: number) {
       const nftData = await marketplaceContract.methods.nftData(id, account).call()
@@ -83,18 +81,54 @@ const Main = () => {
 
     async function getAllProjects(){
         const NFTArrayFromContract: NFT[] = []
+        const newProjectsById: {[key: string]: string} = {}
         for (let i = 0; i < 99999; i++) {
             let newProject: NFT
             try {
-                newProject = await marketplaceContract.methods.projects(i).call()
+                newProject = {...(await marketplaceContract.methods.projects(i).call()), projectId: i}
             } catch {
                 break
             }
-            console.log(newProject)
+            newProjectsById[i] = newProject.name
             NFTArrayFromContract.push(newProject)
         }
+
+        setAllProjectsById(newProjectsById)
         // const NFTArrayFromContract = [...mockNfts]
         //     // await marketplaceContract.methods.projects(id).call()
+
+        setAllNFTs(NFTArrayFromContract)
+        const newProjects: ProjectsDict = {}
+        NFTArrayFromContract.forEach(nft => {
+            if(newProjects[nft.name]){
+                newProjects[nft.name] = [...newProjects[nft.name], nft]
+            }else{
+                newProjects[nft.name] = [nft]
+            }
+        })
+        setAllProjects(newProjects)
+    }
+
+    async function getUserProjects(){
+        const NFTArrayFromContract: NFT[] = []
+
+        const NFTIdsArray = await marketplaceContract.methods.getNfts(account).call()
+
+        for (let i = 0; i < NFTIdsArray.length; i++) {
+            const newNftData = await marketplaceContract.methods.nftData(NFTIdsArray[i]).call()
+            NFTArrayFromContract.push(
+                {
+                    active: true,
+                    allocation: newNftData.allocatedAmount,
+                    limit: 0,
+                    name: allProjectsById[newNftData.projectId],
+                    price: newNftData.allocatedAmount,
+                    projectId: newNftData.projectId,
+                    totalBought: 0,
+                    id: NFTIdsArray[i]
+                }
+            )
+        }
 
         setAllNFTs(NFTArrayFromContract)
         const newProjects: ProjectsDict = {}
@@ -122,8 +156,10 @@ const Main = () => {
                 onChange={(index)=>{
                     if(index === 0){
                         setDysplayingCollection(false)
+                        getAllProjects()
                     }else{
                         setDysplayingCollection(true)
+                        getUserProjects()
                     }
                 }}
             />

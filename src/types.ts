@@ -7,6 +7,8 @@ export type NFT = {
     "limit": number,
     "totalBought": number,
     "active": boolean,
+    projectId: number,
+    id?: number
 }
 
 export type ProjectsDict = {[key: string]: NFT[]}

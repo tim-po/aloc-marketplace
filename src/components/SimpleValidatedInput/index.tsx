@@ -17,6 +17,9 @@ type SimpleValidatedInputPropType = {
     type?: string
     shouldValidateOnInput?: boolean
     errorTooltipText?: string
+    hasDefaultValueButton?: boolean
+    defaultValueButtonText?: string
+    defaultValue?: string,
     validationFunction?: (text: string) => boolean
     onValidationChange: (isValid: boolean) => void
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
@@ -30,7 +33,10 @@ const SimpleValidatedInputDefaultProps = {
     placeholder: '',
     type: 'text',
     errorTooltipText: 'Wrong input',
+    hasDefaultValueButton: false,
+    defaultValueButtonText: 'Default',
     className: '',
+    defaultValue: '',
     shouldValidateOnInput: false,
     onValidationChange: ()=>{},
     validationFunction: ()=>{return true},
@@ -40,8 +46,24 @@ const SimpleValidatedInputDefaultProps = {
 }
 
 const SimpleValidatedInput = (props: SimpleValidatedInputPropType) => {
-    const {placeholder, type, className, shouldValidateOnInput, onValidationChange, errorTooltipText, validationFunction, onBlur, onChange, onFocus} = props
+    const {
+        placeholder,
+        type,
+        className,
+        shouldValidateOnInput,
+        onValidationChange,
+        errorTooltipText,
+        validationFunction,
+        onBlur,
+        onChange,
+        onFocus,
+        hasDefaultValueButton,
+        defaultValueButtonText,
+        defaultValue
+    } = props
+
     const [isValid, setIsValid] = useState(true)
+    const inputRef = React.createRef<HTMLInputElement>()
 
     const onChangeInner = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (onChange) {
@@ -75,9 +97,24 @@ const SimpleValidatedInput = (props: SimpleValidatedInputPropType) => {
         }
     }
 
+    const setDefaultValue = () => {
+        console.log(inputRef.current)
+        if(inputRef.current && defaultValue){
+            console.log(defaultValue)
+            inputRef.current.value = defaultValue
+            // @ts-ignore
+            onChangeInner({target: {value: defaultValue}})
+            // @ts-ignore
+            onBlurInner({target: {value: defaultValue}})
+            setIsValid(true)
+            onValidationChange(true)
+        }
+    }
+
     return (
         <div className={`relative`}>
             <input
+                ref={inputRef}
                 onChange={onChangeInner}
                 onFocus={onFocusInner}
                 onBlur={onBlurInner}
@@ -85,6 +122,11 @@ const SimpleValidatedInput = (props: SimpleValidatedInputPropType) => {
                 placeholder={placeholder}
                 type={type}
             />
+            {hasDefaultValueButton &&
+                <button className={'default-value-button'} onClick={setDefaultValue}>
+                    {defaultValueButtonText}
+                </button>
+            }
             <div className={`validation-error-tooltip ${isValid? '': 'active'}`}>
                 {errorTooltipText}
             </div>

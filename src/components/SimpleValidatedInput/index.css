@@ -9,6 +9,7 @@
     padding-left: 8px;
     position: relative;
     margin-bottom: 16px;
+    height: 26px;
 }
 
 .validation-error-tooltip{
@@ -26,4 +27,28 @@
     top: calc(100% - 18px);
     color: rgba(255, 29, 94, 1);
     z-index: 1;
+}
+
+.default-value-button{
+    transition: all 0.2s;
+    position: absolute;
+    z-index: 2;
+    right: 3px;
+    top: 3px;
+    height: 20px;
+    padding-left: 4px;
+    padding-right: 4px;
+    outline: none !important;
+    border: none;
+    border-radius: 3px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: bolder;
+    background: rgba(255, 255, 255, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.default-value-button:hover{
+    background: rgba(255, 255, 255, 0.2);
 }
