@@ -11,23 +11,22 @@ import {
     Redirect
 } from "react-router-dom";
 import Collection from "./pages/Collection";
+import ProjectCollection from "./pages/ProjectCollection";
+import CurrentNFT from "./pages/CurrentNFT";
 
 const pages = [{title: 'Marketplace', url: '/projects'}, {title: 'Collection', url: '/collection'}]
 
 export const App = () => {
   return (
       <Router>
-          <StandardAppContainer showLocalisationControl={true} isDarkBG={false} pages={pages}>
-              <Switch>
-                  <Route path="/projects">
-                      <Main />
-                  </Route>
-                  <Route path="/collection">
-                      <Collection />
-                  </Route>
-                  <Route path='/' element={ <Redirect to="/projects" /> }/>
-              </Switch>
-          </StandardAppContainer>
+        <StandardAppContainer showLocalisationControl={true} isDarkBG={false} pages={pages}>
+          <Switch>
+            <Route component={Main} path={'/projects'} exact />
+            <Route component={Collection} path={'/collection'} exact />
+            <Route component={Main} path={'/projects/:projectId'} exact />
+            <Route component={CurrentNFT} path={'/nfts/:id'} exact />
+          </Switch>
+        </StandardAppContainer>
       </Router>
   );
 };

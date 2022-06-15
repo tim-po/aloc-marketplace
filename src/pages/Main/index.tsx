@@ -5,11 +5,14 @@ import './index.css'
 import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
 import NFTProjectTile from "../../components/NFTProjectTile";
+import {useParams} from "react-router-dom";
+import ProjectCollection from "../ProjectCollection";
 
 
 const Main = () => {
     const {account} = useWeb3React()
     const [allProjects, setAllProjects] = useState<ProjectsDict>({})
+    const params: {projectId: string} = useParams()
 
     const marketplaceContract = useMarketplaceContract()
 
@@ -41,6 +44,11 @@ const Main = () => {
     useEffect(()=>{
         getAllProjects()
     }, [])
+
+    if(params.projectId){
+        const project = allProjects[params.projectId]
+        return <ProjectCollection name={params.projectId} nfts={project} />
+    }
 
     return (
         <div className="Main">

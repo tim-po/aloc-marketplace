@@ -5,7 +5,6 @@ import {localized} from "../../Standard/utils/localized";
 import './index.css'
 import {NFT} from "../../types";
 import NFTTile from "../NFTTile";
-
 // CONSTANTS
 
 // DEFAULT FUNCTIONS

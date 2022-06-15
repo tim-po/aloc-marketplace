@@ -1,6 +1,7 @@
 import {BigNumber} from "bignumber.js";
 
 export type NFT = {
+    projectName?: string
     "name": string
     "price": BigNumber,
     "allocation": BigNumber,

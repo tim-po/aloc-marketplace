@@ -1,0 +1,29 @@
+.CurrentNFT{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.nft-container {
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    width: max-content;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.current-nft-img {
+    width: 400px;
+    height: 520px;
+    border-radius: 10px;
+    margin-right: 30px;
+}
+
+.current-nft-form {
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+
+}
