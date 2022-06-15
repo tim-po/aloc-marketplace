@@ -145,7 +145,7 @@ const Main = () => {
     useEffect(()=>{
         getAllProjects()
     }, [])
-
+  console.log(allProjects)
     return (
         <div className="Main">
             <h1 className={'main-header'}>Your nft allocation tool</h1>
