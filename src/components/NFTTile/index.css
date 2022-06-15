@@ -13,6 +13,18 @@
     transform: translateX(0) translateY(0);
     box-shadow: 0 0 0px rgba(255, 255, 255, 0.2);
     max-width: max-content;
+
+    animation: appear 1s;
+}
+
+@keyframes appear {
+    from{
+        height: 0;
+    }
+
+    to {
+        height: 340px;
+    }
 }
 
 .NFTTile:hover .nft-data{
@@ -54,14 +66,14 @@
     position: absolute;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
-    bottom: 0;
+    bottom: 10px;
     left: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     padding: 8px;
     height: 36px;
-    transform: translateY(-10px);
+    /*transform: translateY(-10px);*/
     z-index: 10;
 }
 

@@ -409,6 +409,11 @@
         },
         {
           "internalType": "string",
+          "name": "projectName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
           "name": "encryptedEmail",
           "type": "string"
         },

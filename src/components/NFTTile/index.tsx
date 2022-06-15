@@ -205,7 +205,7 @@ const NFTTile = (props: NFTTilePropType) => {
                     <div className={'nft-left'}>{`Only ${nft.limit - nft.totalBought} left`}</div>
                 }
                 <div
-                    className={`nft-data ${dysplayingCollection ? 'collection': ''} ${isFormOpen ? 'open': ''}`}
+                    className={`nft-data collection ${isFormOpen ? 'open': ''}`}
                     onMouseEnter={() => setIsFormOpen(true)}
                     onMouseLeave={() => {
                         if(!isFormForcedOpen){
@@ -219,77 +219,22 @@ const NFTTile = (props: NFTTilePropType) => {
                             <rect style={{transition: 'all 0.2s'}} width="2" height={isFormForcedOpen ? "15": "0"} rx="1" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 13 1.63604)" fill="white"/>
                         </svg>
                     </button>
-                    {dysplayingCollection &&
-                        <>
-                            <div className={'nft-price'}>{`Your allocation: ${wei2eth(nft.price)} BUSD`}</div>
-                        </>
-                    }
-                    {!dysplayingCollection &&
-                        <>
-                        <div className={'nft-price'} style={{marginBottom: 2}}>{`Base price: ${wei2eth(nft.price)} BUSD`}</div>
-                        <div className={'nft-price'} style={{fontSize: 14}}>{`Max allocation: ${wei2eth(nft.allocation)} BUSD`}</div>
-                        </>
-                    }
-                    {dysplayingCollection &&
-                        <>
-                            <SimpleValidatedInput
-                                className="w-full"
-                                onFocus={() => {
-                                    setIsFormForcedOpen(true)
-                                    setIsFormOpen(true)
-                                }}
-                                onChange={(e) => setTransferAdress(e.target.value)}
-                                onValidationChange={(isValid) => setTransferAdressValid(isValid)}
-                                validationFunction={(text) => testAdressRegex.test(text)}
-                                errorTooltipText={'Please enter a correct address'}
-                                placeholder="Transfer address"
-                            />
-                        </>
-                    }
-                    {!dysplayingCollection &&
-                        <>
-                            <SimpleValidatedInput
-                                className="w-full"
-                                onFocus={() => {
-                                    setIsFormForcedOpen(true)
-                                    setIsFormOpen(true)
-                                }}
-                                onChange={(e) => setEmail(e.target.value)}
-                                onValidationChange={(isValid) => setEmailValid(isValid)}
-                                validationFunction={(text) => testEmailRegex.test(text)}
-                                errorTooltipText={'Please enter a correct email'}
-                                placeholder="Email"
-                                type="email"
-                            />
-                            {/*<div className={'nft-price'}>{`Max allocation: ${wei2eth(nft.allocation)} BUSD`}</div>*/}
-                            <SimpleValidatedInput
-                                hasDefaultValueButton
-                                defaultValueButtonText={'Max'}
-                                defaultValue={wei2eth(nft.allocation).toString()}
-                                shouldValidateOnInput
-                                className="w-full"
-                                placeholder="Your allocation in BUSD"
-                                onFocus={() => {
-                                    setIsFormForcedOpen(true)
-                                    setIsFormOpen(true)
-                                }}
-                                onChange={(e) => setAllocationAmountBusd(e.target.value)}
-                                onValidationChange={(isValid) => setAllocationAmountBusdValid(isValid)}
-                                validationFunction={(text) => !isNaN(+text) && text != ''}
-                                errorTooltipText={'Please enter a number'}
-                            />
-                        </>
-                    }
-                    {dysplayingCollection &&
-                        <button className={`allocate-button ${isValid ? '': 'not-valid'}`} onClick={transfer}>
-                            Transfer {isLoading ? <div className={'spinner-container'}><Spinner color={'white'} size={25}/></div>: null}
-                        </button>
-                    }
-                    {!dysplayingCollection &&
-                        <button className={`allocate-button ${(isValid || isApprovalRequired) ? '': 'not-valid'}`} onClick={() => handleBuy()}>
-                            {isApprovalRequired ? 'Approve': 'Allocate'} {isLoading ? <div className={'spinner-container'}><Spinner color={'white'} size={25}/></div>: null}
-                        </button>
-                    }
+                    <div className={'nft-price'}>{`Your allocation: ${wei2eth(nft.price)} BUSD`}</div>
+                    <SimpleValidatedInput
+                        className="w-full"
+                        onFocus={() => {
+                            setIsFormForcedOpen(true)
+                            setIsFormOpen(true)
+                        }}
+                        onChange={(e) => setTransferAdress(e.target.value)}
+                        onValidationChange={(isValid) => setTransferAdressValid(isValid)}
+                        validationFunction={(text) => testAdressRegex.test(text)}
+                        errorTooltipText={'Please enter a correct address'}
+                        placeholder="Transfer address"
+                    />
+                    <button className={`allocate-button ${isValidForTransfer ? '': 'not-valid'}`} onClick={transfer}>
+                        Transfer {isLoading ? <div className={'spinner-container'}><Spinner color={'white'} size={25}/></div>: null}
+                    </button>
                 </div>
                 <button
                     onClick={() => {
