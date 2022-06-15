@@ -149,27 +149,31 @@ const Main = () => {
     return (
         <div className="Main">
             <h1 className={'main-header'}>Your nft allocation tool</h1>
-            <IosStyleSegmentedControll
-                buttons={['Allocation marketplace', 'My collection']}
-                width={600}
-                firstSelectedIndex={0}
-                onChange={(index)=>{
-                    if(index === 0){
-                        setDysplayingCollection(false)
-                        getAllProjects()
-                    }else{
-                        setDysplayingCollection(true)
-                        getUserProjects()
-                    }
-                }}
-            />
-            <div className={'projects-flex'}>
-                {Object.keys(allProjects).map(name => {
-                    return (
-                        <NftProjectContainer dysplayingCollection={dysplayingCollection} name={name} nfts={allProjects[name]} />
-                    )
-                })}
-            </div>
+            {account &&
+                <>
+                    <IosStyleSegmentedControll
+                        buttons={['Allocation marketplace', 'My collection']}
+                        width={600}
+                        firstSelectedIndex={0}
+                        onChange={(index)=>{
+                            if(index === 0){
+                                setDysplayingCollection(false)
+                                getAllProjects()
+                            }else{
+                                setDysplayingCollection(true)
+                                getUserProjects()
+                            }
+                        }}
+                    />
+                    <div className={'projects-flex'}>
+                        {Object.keys(allProjects).map(name => {
+                            return (
+                                <NftProjectContainer dysplayingCollection={dysplayingCollection} name={name} nfts={allProjects[name]} />
+                            )
+                        })}
+                    </div>
+                </>
+            }
         </div>
     )
 };
