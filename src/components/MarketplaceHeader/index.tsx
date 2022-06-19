@@ -4,14 +4,19 @@ import LocaleContext from "../../Standard/LocaleContext";
 import {localized} from "../../Standard/utils/localized";
 import './index.css'
 import styled from 'styled-components'
-import {useParams} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import BackArrowImg from '../../images/arrow.svg'
+
+interface BackArrowProps {
+  isBackArrowRendered: boolean
+}
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-flow: row wrap;
+  margin-bottom: 60px;
+  padding: 20px 40px;
 `
 
 const TextWrapper = styled.div`
@@ -19,7 +24,6 @@ const TextWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
 `
 
 const Title = styled.div`
@@ -34,8 +38,10 @@ const Subtitle = styled.div`
   letter-spacing: 2px;
 `
 
-const BackArrow = styled.img`
-  flex-grow: 1;
+const BackArrow = styled.img<BackArrowProps>`
+  cursor: pointer;
+  visibility: ${p => p.isBackArrowRendered ? 'visible' : 'hidden'};
+  min-width: 51px;
 `
 
 type MarketplaceHeaderPropType = {
@@ -52,8 +58,9 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
   const {locale} = useContext(LocaleContext)
   const {title, subtitle} = props
   const [isBackArrowRendered, setIsBackArrowRendered] = useState<boolean>(false)
+  const history = useHistory()
 
-  const params: {projectId: string} = useParams()
+  const params: { projectId: string } = useParams()
 
   const checkBackArrowRendered = () => {
     if (params.projectId) {
@@ -67,12 +74,19 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
 
   return (
     <Container>
-      {isBackArrowRendered && <BackArrow src={BackArrowImg} alt=""/>}
+      <div style={{width: 183}}>
+        <BackArrow
+          src={BackArrowImg}
+          alt=""
+          onClick={() => history.push('/projects')}
+          isBackArrowRendered={isBackArrowRendered}
+        />
+      </div>
       <TextWrapper>
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
       </TextWrapper>
-      <div style={{width: 183, height: 50, background: 'white', flexGrow: 1}}>Collection</div>
+      <div style={{width: 183, height: 50, background: 'white'}}>Collection</div>
     </Container>
   )
 };

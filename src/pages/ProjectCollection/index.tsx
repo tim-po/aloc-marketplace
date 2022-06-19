@@ -2,22 +2,31 @@ import React from "react";
 import './index.css';
 import {NFT} from "../../types";
 import NFTTileSimple from "../../components/NFTTileSimple";
+import MarketplaceHeader from "../../components/MarketplaceHeader";
+import styled from "styled-components";
 
 type ProjectCollectionPropType = {
-    name: any
+    name: string
     nfts: NFT[]
 }
+
+const ProjectCollectionContainer = styled.div`
+  padding: 0 170px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+`
 
 const ProjectCollection = (props: ProjectCollectionPropType) => {
     const {name, nfts} = props
 
     return (
-        <div className="ProjectCollection">
-          <h1 className={'main-header'}>Project {name}</h1>
-            <div className={'collection-container'}>
-              {nfts?.map((nft) => <NFTTileSimple nft={nft} /> )}
-            </div>
-        </div>
+        <>
+          <MarketplaceHeader title={name} />
+            <ProjectCollectionContainer>
+              {nfts?.map((nft) => <NFTTileSimple key={nft.projectId} nft={nft} /> )}
+            </ProjectCollectionContainer>
+        </>
     )
 };
 
