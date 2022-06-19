@@ -17,7 +17,7 @@ const TileWrapper = styled.div`
   background: rgba(255, 255, 255, 0.3);
   border-radius: 30px;
   padding: 16px;
-  width: 370px;
+  width: 336px;
   cursor: pointer;
 `
 

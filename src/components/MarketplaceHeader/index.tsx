@@ -6,6 +6,7 @@ import './index.css'
 import styled from 'styled-components'
 import {useHistory, useParams} from "react-router-dom";
 import BackArrowImg from '../../images/arrow.svg'
+import CollectionButton from "../CollectionButton";
 
 interface BackArrowProps {
   isBackArrowRendered: boolean
@@ -17,6 +18,12 @@ const Container = styled.div`
   justify-content: space-between;
   margin-bottom: 60px;
   padding: 20px 40px;
+  width: 100%;
+
+  @media screen and (max-width: 800px){
+    justify-content: center;
+    margin-bottom: 40px;
+  }
 `
 
 const TextWrapper = styled.div`
@@ -30,12 +37,40 @@ const Title = styled.div`
   font-weight: 700;
   font-size: 40px;
   letter-spacing: 5px;
+  
+  @media screen and (max-width: 800px){
+    font-size: 24px;
+    margin-top: 40px;
+  }
 `
 
 const Subtitle = styled.div`
   font-weight: 700;
   font-size: 24px;
   letter-spacing: 2px;
+
+  @media screen and (max-width: 800px){
+    font-size: 16px;
+  }
+`
+
+const SideWrapper = styled.div`
+  width: 183px;
+  @media screen and (max-width: 800px){
+    display: none;
+  }
+`
+
+const SideWrapperMobile = styled.div`
+  display: none;
+  position: absolute;
+  right: 10px;
+  z-index: 10000;
+  top: 8px;
+  
+  @media screen and (max-width: 800px){
+    display: block;
+  }
 `
 
 const BackArrow = styled.img<BackArrowProps>`
@@ -74,19 +109,24 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
 
   return (
     <Container>
-      <div style={{width: 183}}>
+      <SideWrapper>
         <BackArrow
           src={BackArrowImg}
           alt=""
           onClick={() => history.push('/projects')}
           isBackArrowRendered={isBackArrowRendered}
         />
-      </div>
+      </SideWrapper>
       <TextWrapper>
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
       </TextWrapper>
-      <div style={{width: 183, height: 50, background: 'white'}}>Collection</div>
+      <SideWrapper>
+        <CollectionButton/>
+      </SideWrapper>
+      <SideWrapperMobile>
+        <CollectionButton/>
+      </SideWrapperMobile>
     </Container>
   )
 };

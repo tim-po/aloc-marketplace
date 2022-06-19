@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {NFT, ProjectsDict} from "../../types";
 import './index.css'
 import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
@@ -8,9 +8,10 @@ import {useParams} from "react-router-dom";
 import ProjectCollection from "../ProjectCollection";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
 import styled from 'styled-components'
+import CollectionBubbleContext from "../../utils/CollectionBubbleContext";
 
 const Wrapper = styled.div`
-  padding: 0 170px;
+  max-width: 1088px;
 `
 
 const Main = () => {
