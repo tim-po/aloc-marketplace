@@ -1,13 +1,17 @@
 import React, {useEffect, useState} from "react";
 import {NFT, ProjectsDict} from "../../types";
-import NftProjectContainer from "../../components/NftProjectCointainer";
 import './index.css'
 import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
 import NFTProjectTile from "../../components/NFTProjectTile";
 import {useParams} from "react-router-dom";
 import ProjectCollection from "../ProjectCollection";
+import MarketplaceHeader from "../../components/MarketplaceHeader";
+import styled from 'styled-components'
 
+const Wrapper = styled.div`
+  padding: 0 170px;
+`
 
 const Main = () => {
     const {account} = useWeb3React()
@@ -52,17 +56,17 @@ const Main = () => {
 
     return (
         <div className="Main">
-            <h1 className={'main-header'}>NFT Marketplace</h1>
+          <MarketplaceHeader />
             {account &&
-                <>
+                <Wrapper>
                     <div className={'projects-flex'}>
                         {Object.keys(allProjects).map(name => {
                             return (
-                                <NFTProjectTile project={name} />
+                                <NFTProjectTile key={name} project={allProjects[name]} />
                             )
                         })}
                     </div>
-                </>
+                </Wrapper>
             }
         </div>
     )

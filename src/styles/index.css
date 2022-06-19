@@ -78,12 +78,7 @@ header {
 }
 
 .main-gradient-light {
-    background: radial-gradient(
-            circle,
-            rgb(36, 131, 92) 0%,
-            rgb(27, 88, 96) 45%,
-            rgb(24, 44, 51) 100%
-    );
+    background: linear-gradient(0deg, #437D9F 0%, #191932 100%);
     color: white;
     min-height: 100vh;
 }

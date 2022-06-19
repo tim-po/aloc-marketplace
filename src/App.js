@@ -19,9 +19,9 @@ const pages = [{title: 'Marketplace', url: '/projects'}, {title: 'Collection', u
 export const App = () => {
   return (
       <Router>
-        <StandardAppContainer locales={['en', 'jp', 'kz', 'gm', 'fr']} isDarkBG={false} pages={pages}>
+        <StandardAppContainer locales={['en', 'jp']} isDarkBG={false}>
           <Switch>
-            <Route component={Main} path={'/projects'} exact />
+            <Route component={Main} path={'/'} exact />
             <Route component={Collection} path={'/collection'} exact />
             <Route component={Main} path={'/projects/:projectId'} exact />
             <Route component={CurrentNFT} path={'/nfts/:id'} exact />
