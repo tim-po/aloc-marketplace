@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import React from "react";
 
-import Index from "./Standard/StandardAppContainer";
+import StandardAppContainer from "./Standard/StandardAppContainer";
 import Main from "./pages/Main";
 import {
     BrowserRouter as Router,
@@ -19,14 +19,14 @@ const pages = [{title: 'Marketplace', url: '/projects'}, {title: 'Collection', u
 export const App = () => {
   return (
       <Router>
-        <Index showLocalisationControl={true} isDarkBG={false} pages={pages}>
+        <StandardAppContainer locales={['en', 'jp', 'kz', 'gm', 'fr']} isDarkBG={false} pages={pages}>
           <Switch>
             <Route component={Main} path={'/projects'} exact />
             <Route component={Collection} path={'/collection'} exact />
             <Route component={Main} path={'/projects/:projectId'} exact />
             <Route component={CurrentNFT} path={'/nfts/:id'} exact />
           </Switch>
-        </Index>
+        </StandardAppContainer>
       </Router>
   );
 };
