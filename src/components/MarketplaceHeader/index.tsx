@@ -47,23 +47,25 @@ const BackArrow = styled.img<BackArrowProps>`
 type MarketplaceHeaderPropType = {
   title: string
   subtitle: string
+  redirectTo: string
 }
 
 const MarketplaceHeaderDefaultProps = {
   title: 'NFT Marketplace',
-  subtitle: 'Projects'
+  subtitle: 'Projects',
+  redirectTo: '/'
 }
 
 const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
   const {locale} = useContext(LocaleContext)
-  const {title, subtitle} = props
+  const {title, subtitle, redirectTo} = props
   const [isBackArrowRendered, setIsBackArrowRendered] = useState<boolean>(false)
   const history = useHistory()
 
-  const params: { projectId: string } = useParams()
+  const params: { projectId?: string, id?: string } = useParams()
 
   const checkBackArrowRendered = () => {
-    if (params.projectId) {
+    if (params.projectId || params.id) {
       setIsBackArrowRendered(true)
     }
   }
@@ -78,7 +80,7 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
         <BackArrow
           src={BackArrowImg}
           alt=""
-          onClick={() => history.push('/projects')}
+          onClick={() => history.push(redirectTo)}
           isBackArrowRendered={isBackArrowRendered}
         />
       </div>

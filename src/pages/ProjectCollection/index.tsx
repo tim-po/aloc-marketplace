@@ -22,7 +22,7 @@ const ProjectCollection = (props: ProjectCollectionPropType) => {
 
     return (
         <>
-          <MarketplaceHeader title={name} />
+          <MarketplaceHeader title={name} redirectTo={'/'}/>
             <ProjectCollectionContainer>
               {nfts?.map((nft) => <NFTTileSimple key={nft.projectId} nft={nft} /> )}
             </ProjectCollectionContainer>
