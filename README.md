@@ -1,4 +1,6 @@
-<h1>Instructions</h1>
+<h2>Screen shot</h2>
+
+![](Resources/main-screan.png)<h1>Instructions</h1>
 
 <h3>General</h2>
 
