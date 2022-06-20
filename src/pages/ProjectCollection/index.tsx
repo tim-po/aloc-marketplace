@@ -10,6 +10,13 @@ type ProjectCollectionPropType = {
     nfts: NFT[]
 }
 
+const ProjectCollectionPage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+`
+
 const ProjectCollectionContainer = styled.div`
   max-width: 1088px;
   display: flex;
@@ -25,12 +32,12 @@ const ProjectCollection = (props: ProjectCollectionPropType) => {
     const {name, nfts} = props
 
     return (
-        <>
+        <ProjectCollectionPage>
           <MarketplaceHeader title={name} redirectTo={'/'}/>
             <ProjectCollectionContainer>
               {nfts?.map((nft) => <NFTTileSimple key={nft.projectId} nft={nft} /> )}
             </ProjectCollectionContainer>
-        </>
+        </ProjectCollectionPage>
     )
 };
 

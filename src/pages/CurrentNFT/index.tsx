@@ -50,12 +50,20 @@ const NFTArtworkWrapper = styled.div`
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
   margin-right: 80px;
   border-radius: 30px;
+
+  @media screen and (max-width: 800px){
+    margin-right: 0px;
+    margin-bottom: 20px;
+  }
 `
 
 const ArtworkImage = styled.img`
   width: 430px;
-  height: 410px;
   border-radius: 30px 30px 0 0;
+
+  @media screen and (max-width: 800px){
+    width: 350px;
+  }
 `
 
 const NFTCount = styled.div`
@@ -69,11 +77,16 @@ const NFTCount = styled.div`
   border-radius: 0 0 30px 30px;
   font-weight: 700;
   font-size: 24px;
+
+  @media screen and (max-width: 800px){
+    width: 350px;
+  }
 `
 
 const NFTCardWrapper = styled.div`
   display: flex;
   align-items: flex-start;
+  flex-wrap: wrap;
   justify-content: center;
 `
 
