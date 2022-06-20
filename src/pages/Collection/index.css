@@ -1,9 +1,28 @@
 .Collection{
     width: 100%;
+    /*max-width: 1088px;*/
+    /*background: rgba(255, 255, 255, 0.25);*/
+    background: linear-gradient(0deg, #407596 0%, #191932 100%);
+    backdrop-filter: blur(40px);
     height: 100%;
     padding: 20px 40px;
     position: relative;
     /*flex-shrink: 2;*/
+    border-radius: 40px 40px 0 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    overflow: auto;
+}
+
+@media screen and (max-width: 800px){
+    .Collection{
+        padding: 10px 20px;
+        border-radius: 20px 20px 0 0;
+    }
 }
 
 .main-header{
@@ -15,9 +34,11 @@
 
 .projects-flex{
     width: 100%;
+    max-width: 1088px;
     display: flex;
     align-items: flex-start;
     gap: 40px;
     justify-content: flex-start;
     flex-wrap: wrap;
+    margin-top: 40px;
 }

@@ -13,16 +13,26 @@ import {
 import Collection from "./pages/Collection";
 import ProjectCollection from "./pages/ProjectCollection";
 import CurrentNFT from "./pages/CurrentNFT";
-import CollectionBubbleContext from "./utils/CollectionBubbleContext";
+import CollectionContext from "./utils/CollectionContext";
 
 const pages = [{title: 'Marketplace', url: '/projects'}, {title: 'Collection', url: '/collection'}]
 
 export const App = () => {
   const [collectionBubbleValue, setCollectionBubbleValue] = useState(0)
+  const [collectionOpen, setCollectionOpen] = useState(false)
+
+
   return (
-    <CollectionBubbleContext.Provider value={{ bubbleCount: collectionBubbleValue, setCollectionBubbleValue: setCollectionBubbleValue }}>
+    <CollectionContext.Provider
+      value={{
+        bubbleCount: collectionBubbleValue,
+        setCollectionBubbleValue: setCollectionBubbleValue,
+        collectionOpen: collectionOpen,
+        setCollectionOpen: setCollectionOpen
+      }}
+    >
       <Router>
-        <StandardAppContainer locales={['en', 'jp']} isDarkBG={false}>
+        <StandardAppContainer logoHref={'/'} locales={['en', 'jp']} isDarkBG={false}>
             <Switch>
               <Route component={Main} path={'/'} exact />
               <Route component={Collection} path={'/collection'} exact />
@@ -31,6 +41,6 @@ export const App = () => {
             </Switch>
         </StandardAppContainer>
       </Router>
-    </CollectionBubbleContext.Provider>
+    </CollectionContext.Provider>
   );
 };

@@ -3,10 +3,12 @@ import texts from './localization'
 import LocaleContext from "../../Standard/LocaleContext";
 import {localized} from "../../Standard/utils/localized";
 import './index.css'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
 import {useHistory, useParams} from "react-router-dom";
 import BackArrowImg from '../../images/arrow.svg'
 import CollectionButton from "../CollectionButton";
+import Collection from "../../pages/Collection";
+import CollectionContext from "../../utils/CollectionContext";
 
 interface BackArrowProps {
   isBackArrowRendered: boolean
@@ -40,7 +42,7 @@ const Title = styled.div`
   
   @media screen and (max-width: 800px){
     font-size: 24px;
-    margin-top: 40px;
+    margin-top: 0px;
   }
 `
 
@@ -61,15 +63,31 @@ const SideWrapper = styled.div`
   }
 `
 
-const SideWrapperMobile = styled.div`
-  display: none;
-  position: absolute;
-  right: 10px;
-  z-index: 10000;
-  top: 8px;
+const CollectionWrapper = styled.div<{isOpen?: boolean}>`
+  transition: all 0.8s;
+  position: fixed;
+  bottom: 0px;
+  z-index: 1000;
+  //max-width: 1088px;
+  width: 100%;
+  height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  //background: #ff1d5e;
+  ${(props)=> (props.isOpen && css`
+    height: calc(100% - 100px);
+  `)};
   
   @media screen and (max-width: 800px){
-    display: block;
+    height: 50px;
+    width: 100px;
+    left: 0;
+    ${(props)=> (props.isOpen && css`
+      height: calc(100% - 100px);
+      width: 100%;
+    `)};
   }
 `
 
@@ -96,6 +114,7 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
   const {title, subtitle, redirectTo} = props
   const [isBackArrowRendered, setIsBackArrowRendered] = useState<boolean>(false)
   const history = useHistory()
+  const {collectionOpen, setCollectionOpen} = useContext(CollectionContext)
 
   const params: { projectId?: string, id?: string } = useParams()
 
@@ -110,26 +129,28 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
   }, [])
 
   return (
-    <Container>
-      <SideWrapper>
-        <BackArrow
-          src={BackArrowImg}
-          alt=""
-          onClick={() => history.push(redirectTo)}
-          isBackArrowRendered={isBackArrowRendered}
-        />
-      </SideWrapper>
-      <TextWrapper>
-        <Title>{title}</Title>
-        <Subtitle>{subtitle}</Subtitle>
-      </TextWrapper>
-      <SideWrapper>
-        <CollectionButton/>
-      </SideWrapper>
-      <SideWrapperMobile>
-        <CollectionButton/>
-      </SideWrapperMobile>
-    </Container>
+    <>
+      <Container>
+        <SideWrapper>
+          <BackArrow
+            src={BackArrowImg}
+            alt=""
+            onClick={() => history.push(redirectTo)}
+            isBackArrowRendered={isBackArrowRendered}
+          />
+        </SideWrapper>
+        <TextWrapper>
+          <Title>{title}</Title>
+          <Subtitle>{subtitle}</Subtitle>
+        </TextWrapper>
+        <SideWrapper>
+          <CollectionButton/>
+        </SideWrapper>
+      </Container>
+      <CollectionWrapper isOpen={collectionOpen}>
+        <Collection />
+      </CollectionWrapper>
+    </>
   )
 };
 

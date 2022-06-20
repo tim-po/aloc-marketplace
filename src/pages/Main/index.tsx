@@ -8,7 +8,7 @@ import {useParams} from "react-router-dom";
 import ProjectCollection from "../ProjectCollection";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
 import styled from 'styled-components'
-import CollectionBubbleContext from "../../utils/CollectionBubbleContext";
+import CollectionContext from "../../utils/CollectionContext";
 
 const Wrapper = styled.div`
   max-width: 1088px;

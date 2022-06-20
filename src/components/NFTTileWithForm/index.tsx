@@ -19,12 +19,22 @@ const NFTArtworkWrapper = styled.div`
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
   margin-right: 80px;
   border-radius: 30px;
+
+  @media screen and (max-width: 800px){
+    margin-right: 0px;
+    width: 350px;
+    margin-bottom: 20px;
+  }
 `
 
 const ArtworkImage = styled.img<NFTArtworkProps>`
-  width: ${p => p.imageWidth}px;
-  height: ${p => p.imageHeight}px;
+  max-width: 430px;
+  width: 100%;
   border-radius: 30px 30px 0 0;
+
+  @media screen and (max-width: 800px){
+    max-width: 350px;
+  }
 `
 
 type NFTTileWithFormPropType = {

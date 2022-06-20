@@ -4,7 +4,7 @@ import LocaleContext from "../../Standard/LocaleContext";
 import {localized} from "../../Standard/utils/localized";
 import './index.css'
 import CollectionIcon from '../../icons/collection'
-import CollectionBubbleContext from "../../utils/CollectionBubbleContext";
+import CollectionContext from "../../utils/CollectionContext";
 
 // CONSTANTS
 
@@ -22,9 +22,10 @@ const CollectionButtonDefaultProps = {
 
 const CollectionButton = (props: CollectionButtonPropType) => {
   const {locale} = useContext(LocaleContext)
-  const bubbleContext = useContext(CollectionBubbleContext)
+  const bubbleContext = useContext(CollectionContext)
   const [shouldAnimate, setShouldAnimate] = useState(false)
   const [isFirstChange, setIsFirstChange] = useState(true)
+  const {setCollectionOpen} = useContext(CollectionContext)
 
   const [bubbleCount, setBubbleCount] = useState<string>('')
 
@@ -49,7 +50,7 @@ const CollectionButton = (props: CollectionButtonPropType) => {
   return (
         <div className={`CollectionButton ${shouldAnimate ? 'animate': ''}`}>
           <div className={`bubble ${bubbleCount ? 'shown': ''}`}>{bubbleCount}</div>
-          <div className={'CollectionButton-inner'}>
+          <div className={'CollectionButton-inner'} onClick={() => setCollectionOpen(true)}>
             <div className={'inner-gradient'}/>
             <CollectionIcon />
             Collection

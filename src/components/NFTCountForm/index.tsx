@@ -16,6 +16,10 @@ const NFTCount = styled.div`
   border-radius: 0 0 30px 30px;
   font-weight: 700;
   font-size: 24px;
+
+  @media screen and (max-width: 800px){
+    width: 350px;
+  }
 `
 
 type NFTCountFormPropType = {

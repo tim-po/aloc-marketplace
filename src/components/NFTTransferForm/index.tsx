@@ -34,7 +34,8 @@ const NFTTransferFormContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 340px;
+  width: 350px;
+  max-width: 100%;
   height: 130px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(4px);
@@ -109,8 +110,7 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
   return (
     <NFTTransferFormContainer>
       <Text fontWeight={400} marginBottom={14}>
-        Allocation:
-        <Text fontWeight={700}>{`${wei2eth(nft[0].allocation)} BUSD`}</Text>
+        Allocation: <Text fontWeight={700}>{`${wei2eth(nft[0].allocation)} BUSD`}</Text>
       </Text>
       <FlexWrapper>
         <SimpleValidatedInput
