@@ -10,7 +10,7 @@ interface TextProps {
   marginBottom?: number
 }
 
-const mockImage = 'https://i.pinimg.com/564x/e5/06/cf/e506cfcd9f85b11eefd590f871db9784.jpg'
+const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
 
 const TileWrapper = styled.div`
   display: flex;
@@ -70,10 +70,10 @@ const NFTProjectTile = (props: NFTTilePropType) => {
         <TileWrapper onClick={() => history.push(`/projects/${project[0].name}`)}>
           <LogoWrapper>
             <Logo src={mockImage} ref={imgRef}/>
-            <GradientText>{project[0].limit} NFT</GradientText>
+            <GradientText>{project.length} NFT</GradientText>
           </LogoWrapper>
           <TextWrapper>
-            <Text fontSize={24} fontWeight={700} marginBottom={4}>Gulnarochka bong</Text>
+            <Text fontSize={24} fontWeight={700} marginBottom={4}>{project[0].name}</Text>
             <Text fontSize={12} fontWeight={400} marginBottom={8}>by Burek&Co.</Text>
             <Text fontSize={16} fontWeight={400}>A promotion project about uzbekskiy cheburek. Buy your nft cheburek</Text>
           </TextWrapper>
