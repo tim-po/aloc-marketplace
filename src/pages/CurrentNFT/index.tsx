@@ -16,6 +16,8 @@ import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import Spinner from "../../Standard/components/Spinner";
 import {useParams} from "react-router-dom";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
+import NFTTileWithForm from "../../components/NFTTileWithForm";
+import NFTCountForm from "../../components/NFTCountForm";
 import styled from 'styled-components'
 
 const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
@@ -105,6 +107,7 @@ const Button = styled.button<ButtonProps>`
     outline: none;
   }
 `
+
 const SpinnerContainer = styled.div`
   position: absolute;
   right: 10px;
@@ -209,6 +212,8 @@ const CurrentNFT = () => {
         .mintAndAllocate(`${params.id}`, `${(new BigNumber(10).pow(18).multipliedBy(+allocationAmountBusd)).toString()}`, encryptedEmail)
         .send({from: account}).once('receipt', () => {
           setIsLoading(false)
+          setEmail('')
+          setAllowance('')
         });
 
     }
@@ -258,10 +263,9 @@ const CurrentNFT = () => {
     <CurrentNFTContainer>
       <MarketplaceHeader title={nft.name} redirectTo={`/projects/${nft.name}`}/>
       <NFTCardWrapper>
-        <NFTArtworkWrapper>
-          <ArtworkImage ref={imgRef} src={mockImage}/>
-          <NFTCount>{`Only ${+nft.limit - +nft.totalBought} left`}</NFTCount>
-        </NFTArtworkWrapper>
+        <NFTTileWithForm imageHeight={410} imageWidth={430}>
+          <NFTCountForm countOfNFT={+nft.limit - +nft.totalBought}/>
+        </NFTTileWithForm>
         <div className="current-nft-form">
           <Text fontWeight={700} fontSize={40} marginBottom={40}>{nft.name}</Text>
           <Text fontWeight={700} fontSize={24} marginBottom={20}>{`Base price: ${wei2eth(nft.price)} BUSD`}</Text>

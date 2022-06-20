@@ -2,10 +2,17 @@ import React, {useContext, useEffect, useState} from "react";
 import LocaleContext from "../../Standard/LocaleContext";
 import {NFT, ProjectsDict} from "../../types";
 import NftProjectContainer from "../../components/NftProjectCointainer";
+import NFTTileWithForm from "../../components/NFTTileWithForm";
+import NFTTransferForm from "../../components/NFTTransferForm";
 import './index.css'
 import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
+import styled from "styled-components";
 
+const Title = styled.div`
+  font-weight: 700;
+  font-size: 40px;
+`
 
 const Collection = () => {
     const {locale} = useContext(LocaleContext)
@@ -55,13 +62,15 @@ const Collection = () => {
 
     return (
         <div className="Collection">
-            <h1 className={'main-header'}>Your nft collection</h1>
+            <Title>My collection</Title>
             {account &&
                 <>
                     <div className={'projects-flex'}>
                         {Object.keys(allProjects).map(name => {
                             return (
-                                <NftProjectContainer dysplayingCollection={true} name={name} nfts={allProjects[name]} />
+                             <NFTTileWithForm key={name} imageHeight={320} imageWidth={340}>
+                                <NFTTransferForm nft={allProjects[name]}/>
+                             </NFTTileWithForm>
                             )
                         })}
                     </div>
