@@ -25,7 +25,7 @@ const NftProjectCointainerDefaultProps = {
 const NftProjectContainer = (props: NftProjectCointainerPropType) => {
     const {nfts, name, dysplayingCollection} = props
     const {locale} = useContext(LocaleContext)
-
+  console.log(nfts)
     return (
         <div className={'NftProjectCointainer'}>
             <h3 className={'project-header'}>{name}</h3>
