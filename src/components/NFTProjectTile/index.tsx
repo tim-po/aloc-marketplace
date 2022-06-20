@@ -74,8 +74,8 @@ const NFTProjectTile = (props: NFTTilePropType) => {
           </LogoWrapper>
           <TextWrapper>
             <Text fontSize={24} fontWeight={700} marginBottom={4}>{project[0].name}</Text>
-            <Text fontSize={12} fontWeight={400} marginBottom={8}>by Burek&Co.</Text>
-            <Text fontSize={16} fontWeight={400}>A promotion project about uzbekskiy cheburek. Buy your nft cheburek</Text>
+            <Text fontSize={12} fontWeight={400} marginBottom={8}>by Author.</Text>
+            <Text fontSize={16} fontWeight={400}>A promotion project. Buy your nft!</Text>
           </TextWrapper>
         </TileWrapper>
     )
