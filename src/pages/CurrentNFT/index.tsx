@@ -18,6 +18,7 @@ import {useParams} from "react-router-dom";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
 import NFTTileWithForm from "../../components/NFTTileWithForm";
 import NFTCountForm from "../../components/NFTCountForm";
+import Notification from "../../components/Notification";
 import styled from 'styled-components'
 
 const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
@@ -284,61 +285,67 @@ const CurrentNFT = () => {
           <Text fontWeight={700} fontSize={24} marginBottom={20}>{`Base price: ${wei2eth(nft.price)} BUSD`}</Text>
           <Text fontWeight={700} fontSize={24}
                 marginBottom={40}>{`Max allocation: ${wei2eth(nft.allocation)} BUSD`}</Text>
-          {
-            isApprovalRequired
-              ?
-              <Button
-                textColor={'#fff'}
-                background={'#33CC66'}
-                onClick={approve}
-              >Approve
-                {
-                  isApproveLoading ?
-                    <SpinnerContainer>
-                      <Spinner color={'white'} size={25}/>
-                    </SpinnerContainer>
-                    :
-                    null
-                }
-              </Button>
-              :
-              <>
-                <SimpleValidatedInput
-                  className="w-full"
-                  onChange={(e) => setEmail(e.target.value)}
-                  onValidationChange={(isValid) => setEmailValid(isValid)}
-                  validationFunction={(text) => testEmailRegex.test(text)}
-                  errorTooltipText={'Please enter a correct email'}
-                  placeholder="Email"
-                  type="email"
-                />
-                <SimpleValidatedInput
-                  hasDefaultValueButton
-                  defaultValueButtonText={'Max'}
-                  defaultValue={wei2eth(nft.allocation).toString()}
-                  shouldValidateOnInput
-                  className="w-full"
-                  placeholder="Your allocation in BUSD"
-                  onChange={(e) => setAllocationAmountBusd(e.target.value)}
-                  onValidationChange={(isValid) => setAllocationAmountBusdValid(isValid)}
-                  validationFunction={(text) => !isNaN(+text) && text != ''}
-                  errorTooltipText={'Please enter a number'}
-                />
-                <Button
-                  marginTop={21}
-                  textColor={isValid ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
-                  background={isValid ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
-                  onClick={() => handleBuy()}
-                >Allocate
-                  {
-                    isLoading ?
-                      <SpinnerContainer>
-                        <Spinner color={'white'} size={25}/>
-                      </SpinnerContainer>
-                      : null
-                  }
-                </Button>
-              </>
+          {!account ?
+            <Notification body={'Please connect wallet to allocate'} />
+            :
+            <>
+              {
+                isApprovalRequired
+                  ?
+                  <Button
+                    textColor={'#fff'}
+                    background={'#33CC66'}
+                    onClick={approve}
+                  >Approve
+                    {
+                      isApproveLoading ?
+                        <SpinnerContainer>
+                          <Spinner color={'white'} size={25}/>
+                        </SpinnerContainer>
+                        :
+                        null
+                    }
+                  </Button>
+                  :
+                  <>
+                    <SimpleValidatedInput
+                      className="w-full"
+                      onChange={(e) => setEmail(e.target.value)}
+                      onValidationChange={(isValid) => setEmailValid(isValid)}
+                      validationFunction={(text) => testEmailRegex.test(text)}
+                      errorTooltipText={'Please enter a correct email'}
+                      placeholder="Email"
+                      type="email"
+                    />
+                    <SimpleValidatedInput
+                      hasDefaultValueButton
+                      defaultValueButtonText={'Max'}
+                      defaultValue={wei2eth(nft.allocation).toString()}
+                      shouldValidateOnInput
+                      className="w-full"
+                      placeholder="Your allocation in BUSD"
+                      onChange={(e) => setAllocationAmountBusd(e.target.value)}
+                      onValidationChange={(isValid) => setAllocationAmountBusdValid(isValid)}
+                      validationFunction={(text) => !isNaN(+text) && text != ''}
+                      errorTooltipText={'Please enter a number'}
+                    />
+                    <Button
+                      marginTop={21}
+                      textColor={isValid ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
+                      background={isValid ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
+                      onClick={() => handleBuy()}
+                    >Allocate
+                      {
+                        isLoading ?
+                          <SpinnerContainer>
+                            <Spinner color={'white'} size={25}/>
+                          </SpinnerContainer>
+                          : null
+                      }
+                    </Button>
+                  </>
+              }
+            </>
           }
         </div>
       </NFTCardWrapper>
