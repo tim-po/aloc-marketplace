@@ -22,7 +22,7 @@ interface ButtonProps {
 }
 
 type NFTTransferFormPropType = {
-  nft: NFT[]
+  nft: NFT
 }
 
 const NFTTransferFormDefaultProps = {}
@@ -79,7 +79,6 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
   const {nft} = props
   const {account} = useWeb3React()
   const marketplaceContract = useMarketplaceContract()
-  console.log(nft)
   const [transferAddress, setTransferAddress] = useState<string | undefined>(undefined)
   const [transferAddressValid, setTransferAddressValid] = useState(false)
 
@@ -87,19 +86,19 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
 
   const isValidForTransfer =
     transferAddressValid &&
-    transferAddress !== ''
-
-  // && nft.id
+    transferAddress !== '' &&
+    nft.id
 
   function transfer() {
 
-    if(isLoading) {
+    if (isLoading) {
       return
     }
 
-    if (isValidForTransfer && nft[0].id) {
-      setIsLoading(true)
-      marketplaceContract.methods.safeTransferFrom(account, transferAddress, `${+nft[0].id}`, '1', '0x0')
+    setIsLoading(true)
+
+    if (isValidForTransfer && nft.id) {
+      marketplaceContract.methods.safeTransferFrom(account, transferAddress, `${+nft.id}`, 1, '0x0')
         .send({from: account})
         .once('receipt', () => {
           setIsLoading(false)
@@ -110,7 +109,7 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
   return (
     <NFTTransferFormContainer>
       <Text fontWeight={400} marginBottom={14}>
-        Allocation: <Text fontWeight={700}>{`${wei2eth(nft[0].allocation)} BUSD`}</Text>
+        Allocation: <Text fontWeight={700}>{`${wei2eth(nft.allocation)} BUSD`}</Text>
       </Text>
       <FlexWrapper>
         <SimpleValidatedInput
@@ -124,6 +123,7 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
         <Button
           background={isValidForTransfer ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
           textColor={isValidForTransfer ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
+          onClick={transfer}
         >
           {
             isLoading ?

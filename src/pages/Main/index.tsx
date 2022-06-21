@@ -15,7 +15,6 @@ const Wrapper = styled.div`
 `
 
 const Main = () => {
-    const {account} = useWeb3React()
     const [allProjects, setAllProjects] = useState<ProjectsDict>({})
     const params: {projectId: string} = useParams()
 
@@ -58,17 +57,15 @@ const Main = () => {
     return (
         <div className="Main">
           <MarketplaceHeader />
-            {account &&
-                <Wrapper>
-                    <div className={'projects-flex'}>
-                        {Object.keys(allProjects).map(name => {
-                            return (
-                                <NFTProjectTile key={name} project={allProjects[name]} />
-                            )
-                        })}
-                    </div>
-                </Wrapper>
-            }
+          <Wrapper>
+            <div className={'projects-flex'}>
+              {Object.keys(allProjects).map(name => {
+                return (
+                  <NFTProjectTile key={name} project={allProjects[name]} />
+                )
+              })}
+            </div>
+          </Wrapper>
         </div>
     )
 };
