@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-undef */
-import React, {useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import StandardAppContainer from "./Standard/StandardAppContainer";
 import Main from "./pages/Main";
@@ -14,12 +14,28 @@ import Collection from "./pages/Collection";
 import ProjectCollection from "./pages/ProjectCollection";
 import CurrentNFT from "./pages/CurrentNFT";
 import CollectionContext from "./utils/CollectionContext";
+import {useWeb3React} from "@web3-react/core";
+import {useMarketplaceContract} from "./hooks/useMarketplaceContract";
 
 const pages = [{title: 'Marketplace', url: '/projects'}, {title: 'Collection', url: '/collection'}]
 
 export const App = () => {
+  const {account, active} = useWeb3React()
+  const marketplaceContract = useMarketplaceContract()
+
   const [collectionBubbleValue, setCollectionBubbleValue] = useState(0)
   const [collectionOpen, setCollectionOpen] = useState(false)
+
+  async function updateUserBalance(){
+    const NFTIdsArray = await marketplaceContract.methods.getNfts(account).call()
+    setCollectionBubbleValue(NFTIdsArray.length)
+  }
+
+  useEffect(()=>{
+    if(active) {
+      updateUserBalance()
+    }
+  }, [active])
 
 
   return (

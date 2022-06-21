@@ -148,7 +148,7 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
         </SideWrapper>
       </Container>
       <CollectionWrapper isOpen={collectionOpen}>
-        <Collection />
+        <Collection isOpen={collectionOpen}  />
       </CollectionWrapper>
     </>
   )

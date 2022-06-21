@@ -16,10 +16,11 @@ import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import Spinner from "../../Standard/components/Spinner";
 import {useParams} from "react-router-dom";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
-import NFTTileWithForm from "../../components/NFTTileWithForm";
 import NFTCountForm from "../../components/NFTCountForm";
 import Notification from "../../components/Notification";
 import styled from 'styled-components'
+import CollectionContext from "../../utils/CollectionContext";
+import { ArtworkImage, BoxShadowShiny } from "components/NFTTile/styled";
 
 const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
 const testEmailRegex = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
@@ -60,15 +61,6 @@ const NFTArtworkWrapper = styled.div`
   }
 `
 
-const ArtworkImage = styled.img`
-  width: 430px;
-  border-radius: 30px 30px 0 0;
-
-  @media screen and (max-width: 800px){
-    width: 350px;
-  }
-`
-
 const NFTCount = styled.div`
   display: flex;
   align-items: center;
@@ -91,6 +83,10 @@ const NFTCardWrapper = styled.div`
   align-items: flex-start;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 80px;
+  @media screen and (max-width: 800px){
+    gap: 30px;
+  }
 `
 
 const Text = styled.div<TextProps>`
@@ -135,6 +131,7 @@ const CurrentNFT = () => {
   const busdContract = useBUSDContract()
   const marketplaceContract = useMarketplaceContract()
   const {account, active} = useWeb3React()
+  const collectionContext = useContext(CollectionContext)
 
   const {balance, balanceLoading, updateBalance} = useBalanceOfBUSD()
 
@@ -228,6 +225,7 @@ const CurrentNFT = () => {
           setIsLoading(false)
           setEmail('')
           setAllowance('')
+          collectionContext.setCollectionBubbleValue(collectionContext.bubbleCount + 1)
         });
 
     }
@@ -238,7 +236,7 @@ const CurrentNFT = () => {
       return
     }
 
-    if (!isValid && !isApprovalRequired) {
+    if (!isValid && !isApprovalRequired()) {
       return
     }
 
@@ -261,7 +259,7 @@ const CurrentNFT = () => {
 
   }
 
-  const isApprovalRequired = (parseInt(allowance) < parseInt(fromExponential(ALLOWANCE)))
+  const isApprovalRequired = () => nft && (parseInt(allowance) < parseInt(nft.price.toString()))
 
   useEffect(() => {
     if (active) {
@@ -277,9 +275,10 @@ const CurrentNFT = () => {
     <CurrentNFTContainer>
       <MarketplaceHeader title={nft.name} redirectTo={`/projects/${nft.name}`}/>
       <NFTCardWrapper>
-        <NFTTileWithForm imageHeight={410} imageWidth={430}>
+        <BoxShadowShiny>
+          <ArtworkImage src={mockImage} maxWidth={430}/>
           <NFTCountForm countOfNFT={+nft.limit - +nft.totalBought}/>
-        </NFTTileWithForm>
+        </BoxShadowShiny>
         <div className="current-nft-form">
           <Text fontWeight={700} fontSize={40} marginBottom={40}>{nft.name}</Text>
           <Text fontWeight={700} fontSize={24} marginBottom={20}>{`Base price: ${wei2eth(nft.price)} BUSD`}</Text>
@@ -290,13 +289,14 @@ const CurrentNFT = () => {
             :
             <>
               {
-                isApprovalRequired
+                isApprovalRequired()
                   ?
                   <Button
                     textColor={'#fff'}
                     background={'#33CC66'}
                     onClick={approve}
-                  >Approve
+                  >
+                    Approve
                     {
                       isApproveLoading ?
                         <SpinnerContainer>
@@ -334,14 +334,11 @@ const CurrentNFT = () => {
                       textColor={isValid ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
                       background={isValid ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
                       onClick={() => handleBuy()}
-                    >Allocate
-                      {
-                        isLoading ?
-                          <SpinnerContainer>
-                            <Spinner color={'white'} size={25}/>
-                          </SpinnerContainer>
-                          : null
-                      }
+                    >
+                      Allocate
+                      <SpinnerContainer>
+                        <Spinner color={'white'} size={isLoading ? 25: 0}/>
+                      </SpinnerContainer>
                     </Button>
                   </>
               }

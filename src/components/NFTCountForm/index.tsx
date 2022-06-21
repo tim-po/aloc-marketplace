@@ -9,7 +9,7 @@ const NFTCount = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 430px;
+  width: 100%;
   height: 60px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(4px);

@@ -91,16 +91,13 @@ const SimpleValidatedInput = (props: SimpleValidatedInputPropType) => {
             onBlur(e)
         }
         if(validationFunction && !validationFunction(e.target.value)){
-            console.log(e.target.value)
             setIsValid(false)
             onValidationChange(false)
         }
     }
 
     const setDefaultValue = () => {
-        console.log(inputRef.current)
         if(inputRef.current && defaultValue){
-            console.log(defaultValue)
             inputRef.current.value = defaultValue
             // @ts-ignore
             onChangeInner({target: {value: defaultValue}})

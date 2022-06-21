@@ -3,7 +3,6 @@
     /*max-width: 1088px;*/
     /*background: rgba(255, 255, 255, 0.25);*/
     background: linear-gradient(0deg, #407596 0%, #191932 100%);
-    backdrop-filter: blur(40px);
     height: 100%;
     padding: 20px 40px;
     position: relative;
@@ -16,6 +15,10 @@
     justify-content: flex-start;
 
     overflow: auto;
+}
+
+.Collection.closed{
+    overflow: hidden !important;
 }
 
 @media screen and (max-width: 800px){
@@ -32,7 +35,7 @@
     /*position: fixed;*/
 }
 
-.projects-flex{
+.projects-flex-collection{
     width: 100%;
     max-width: 1088px;
     display: flex;

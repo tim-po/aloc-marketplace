@@ -34,11 +34,9 @@ const NFTTransferFormContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 350px;
   max-width: 100%;
   height: 130px;
   background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
   border-radius: 0 0 30px 30px;
   padding: 8px 12px;
 `
@@ -98,7 +96,7 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
     setIsLoading(true)
 
     if (isValidForTransfer && nft.id) {
-      marketplaceContract.methods.safeTransferFrom(account, transferAddress, `${+nft.id}`, 1, '0x0')
+      marketplaceContract.methods.safeTransferFrom(account, transferAddress, +nft.id, 1, '0x0')
         .send({from: account})
         .once('receipt', () => {
           setIsLoading(false)
