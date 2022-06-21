@@ -24,7 +24,8 @@ type SimpleValidatedInputPropType = {
     onValidationChange: (isValid: boolean) => void
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
     onFocus?: (e: React.FocusEvent) => void
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    autocomplete?: string
 }
 
 
@@ -59,7 +60,8 @@ const SimpleValidatedInput = (props: SimpleValidatedInputPropType) => {
         onFocus,
         hasDefaultValueButton,
         defaultValueButtonText,
-        defaultValue
+        defaultValue,
+        autocomplete
     } = props
 
     const [isValid, setIsValid] = useState(true)
@@ -109,7 +111,7 @@ const SimpleValidatedInput = (props: SimpleValidatedInputPropType) => {
     }
 
     return (
-        <div className={`relative`}>
+        <form className={`relative`}>
             <input
                 ref={inputRef}
                 onChange={onChangeInner}
@@ -118,16 +120,17 @@ const SimpleValidatedInput = (props: SimpleValidatedInputPropType) => {
                 className={`SimpleValidatedInput ${isValid ? '': 'not-valid'} ${className}`}
                 placeholder={placeholder}
                 type={type}
+                autoComplete={autocomplete}
             />
             {hasDefaultValueButton &&
-                <button className={'default-value-button'} onClick={setDefaultValue}>
+                <button type={'button'} className={'default-value-button'} onClick={setDefaultValue}>
                     {defaultValueButtonText}
                 </button>
             }
             <div className={`validation-error-tooltip ${isValid? '': 'active'}`}>
                 {errorTooltipText}
             </div>
-        </div>
+        </form>
     )
 };
 

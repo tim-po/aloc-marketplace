@@ -316,6 +316,7 @@ const CurrentNFT = () => {
                       errorTooltipText={'Please enter a correct email'}
                       placeholder="Email"
                       type="email"
+                      autocomplete="email"
                     />
                     <SimpleValidatedInput
                       hasDefaultValueButton
