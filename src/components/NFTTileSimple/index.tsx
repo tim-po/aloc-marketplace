@@ -17,6 +17,7 @@ const NFTTileWrapper = styled.div`
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
   max-width: max-content;
   margin-bottom: 16px;
+  clip-path: content-box;
 `
 
 const NFTProjectLimit = styled.div`
@@ -42,6 +43,7 @@ const NFTProjectArtwork = styled.img`
   display: block;
   z-index: 0;
   cursor: pointer;
+  transform: scale(1);
 
   &:hover {
     transform: scale(1.2)
