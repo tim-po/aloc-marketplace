@@ -18,13 +18,13 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
   padding: 20px 40px;
   width: 100%;
 
   @media screen and (max-width: 800px){
     justify-content: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 `
 

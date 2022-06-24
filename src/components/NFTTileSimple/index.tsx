@@ -48,6 +48,10 @@ const NFTProjectArtwork = styled.img`
   &:hover {
     transform: scale(1.2)
   }
+
+  @media screen and (max-width: 800px){
+    transform: scale(1) !important;
+  }
 `
 
 const Price = styled.div`

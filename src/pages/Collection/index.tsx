@@ -154,7 +154,10 @@ const Collection = (props: {isOpen?: boolean}) => {
           </div>
         </>
         :
-        <Notification body={'Please connect wallet to see the collection'}/>
+        <>
+          <div style={{marginTop: 40}} />
+          <Notification body={'Please connect wallet to see the collection'}/>
+        </>
       }
     </div>
   )
