@@ -1,14 +1,3 @@
-export const ethereumConnect = () =>
-    window.ethereum.request({method: "eth_requestAccounts"});
-export const isEthereumMetaMask = window.ethereum
-    ? window.ethereum.isMetaMask
-    : null;
-export const ethereumSendTransaction = (params) =>
-    window.ethereum.request({
-        method: "eth_sendTransaction",
-        params,
-    });
-
 export const switchNetwork = async (chainId) => {
     try {
         await window.ethereum.request({
