@@ -1,8 +1,5 @@
 export const ethereumConnect = () =>
     window.ethereum.request({method: "eth_requestAccounts"});
-export const isEthereumConnected = window.ethereum
-    ? window.ethereum.isConnected()
-    : false;
 export const isEthereumMetaMask = window.ethereum
     ? window.ethereum.isMetaMask
     : null;
