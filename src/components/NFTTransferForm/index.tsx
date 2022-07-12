@@ -27,7 +27,7 @@ type NFTTransferFormPropType = {
 
 const NFTTransferFormDefaultProps = {}
 
-const testAdressRegex = /0x*/g;
+const testAddressRegex = /0x*/g;
 
 const NFTTransferFormContainer = styled.div`
   display: flex;
@@ -114,7 +114,7 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
           className="w-full"
           onChange={(e) => setTransferAddress(e.target.value)}
           onValidationChange={(isValid) => setTransferAddressValid(isValid)}
-          validationFunction={(text) => testAdressRegex.test(text)}
+          validationFunction={(text) => testAddressRegex.test(text)}
           errorTooltipText={'Please enter a correct address'}
           placeholder="Transfer address"
         />

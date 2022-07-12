@@ -144,7 +144,7 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
           <Subtitle>{subtitle}</Subtitle>
         </TextWrapper>
         <SideWrapper>
-          <CollectionButton/>
+          {/*<CollectionButton/>*/}
         </SideWrapper>
       </Container>
       <CollectionWrapper isOpen={collectionOpen}>
