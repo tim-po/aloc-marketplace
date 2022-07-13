@@ -4,7 +4,7 @@ import LocaleContext from "../../Standard/LocaleContext";
 import {localized} from "../../Standard/utils/localized";
 import './index.css'
 import styled, {css} from 'styled-components'
-import {useHistory, useParams} from "react-router-dom";
+import {useHistory, useLocation, useParams} from "react-router-dom";
 import BackArrowImg from '../../images/arrow.svg'
 import CollectionButton from "../CollectionButton";
 import Collection from "../../pages/Collection";
@@ -64,10 +64,10 @@ const SideWrapper = styled.div`
 `
 
 const CollectionWrapper = styled.div<{isOpen?: boolean}>`
-  transition: all 0.8s;
+  //transition: all 0.8s;
   position: fixed;
   bottom: 0px;
-  z-index: 1000;
+  z-index: 2;
   //max-width: 1088px;
   width: 100%;
   height: 0;
@@ -77,18 +77,18 @@ const CollectionWrapper = styled.div<{isOpen?: boolean}>`
   overflow: hidden;
   //background: #ff1d5e;
   ${(props)=> (props.isOpen && css`
-    height: calc(100% - 100px);
+    height: calc(100% - 90px);
   `)};
   
-  @media screen and (max-width: 800px){
-    height: 50px;
-    width: 100px;
-    left: 0;
-    ${(props)=> (props.isOpen && css`
-      height: calc(100% - 100px);
-      width: 100%;
-    `)};
-  }
+  // @media screen and (max-width: 800px){
+  //   height: 50px;
+  //   width: 100px;
+  //   left: 0;
+  //   ${(props)=> (props.isOpen && css`
+  //     height: calc(100% - 100px);
+  //     width: 100%;
+  //   `)};
+  // }
 `
 
 const BackArrow = styled.img<BackArrowProps>`
@@ -116,7 +116,9 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
   const history = useHistory()
   const {collectionOpen, setCollectionOpen} = useContext(CollectionContext)
 
-  const params: { projectId?: string, id?: string } = useParams()
+  const params: { projectId?: string, id?: string} = useParams()
+  const search = useLocation().search
+  const collection = new URLSearchParams(search).get('collection');
 
   const checkBackArrowRendered = () => {
     if (params.projectId || params.id) {
@@ -147,8 +149,8 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
           {/*<CollectionButton/>*/}
         </SideWrapper>
       </Container>
-      <CollectionWrapper isOpen={collectionOpen}>
-        <Collection isOpen={collectionOpen}  />
+      <CollectionWrapper isOpen={collection === 'open'}>
+        <Collection isOpen={collection === 'open'}  />
       </CollectionWrapper>
     </>
   )

@@ -11,6 +11,7 @@ import CollectionContext from "../../utils/CollectionContext";
 import Notification from "../../components/Notification";
 import {ArtworkImage, BoxShadowShiny} from "../../components/NFTTile/styled";
 import NftProjectContainer from "../../components/NftProjectContainer";
+import {useHistory} from "react-router-dom";
 
 const Title = styled.div<{ open: boolean }>`
   font-weight: 700;
@@ -70,10 +71,7 @@ const MobileCollectionOpenButton = styled.button`
   position: absolute;
   top: 0;
   z-index: 10;
-
-  @media screen and (max-width: 800px) {
-    display: block;
-  }
+  
 `
 
 const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
@@ -86,6 +84,7 @@ const Collection = (props: {isOpen?: boolean}) => {
   const {setCollectionOpen, collectionOpen} = useContext(CollectionContext)
 
   const marketplaceContract = useMarketplaceContract()
+  const history = useHistory()
 
   async function getUserProjects() {
     const NFTArrayFromContract: NFT[] = []
@@ -128,8 +127,11 @@ const Collection = (props: {isOpen?: boolean}) => {
   return (
     <div className={`Collection ${isOpen ? '': 'closed'}`}>
       <MobileCollectionOpenButton onClick={() => setCollectionOpen(true)}/>
-      {collectionOpen &&
-        <CloseButton onClick={() => setCollectionOpen(false)}>
+      {(collectionOpen || isOpen) &&
+        <CloseButton onClick={() => {
+          history.replace({search: ''})
+          setCollectionOpen(false)
+        }}>
           <Cross/>
         </CloseButton>
       }
