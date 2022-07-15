@@ -59,7 +59,7 @@ const Main = () => {
           <MarketplaceHeader />
           <Wrapper>
             <div className={'projects-flex'}>
-              {Object.keys(allProjects).map(name => {
+              {Object.keys(allProjects).map((name) => {
                 return (
                   <NFTProjectTile key={name} project={allProjects[name]} />
                 )

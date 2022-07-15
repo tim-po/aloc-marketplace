@@ -206,28 +206,35 @@ const CurrentNFT = () => {
 
     setIsApproveLoading(true)
     const amount2eth = fromExponential(ALLOWANCE);
-    await busdContract
-      .methods
-      .approve(getAllocationMarketplaceContract(), amount2eth)
-      .send({from: account}).once('receipt', () => {
-        updateAllowance()
-        setIsApproveLoading(false)
-      });
+    try {
+      await busdContract
+        .methods
+        .approve(getAllocationMarketplaceContract(), amount2eth)
+        .send({from: account}).once('receipt', () => {
+          updateAllowance()
+          setIsApproveLoading(false)
+        });
+    } catch (e) {
+      setIsLoading(false)
+    }
   };
 
   async function mintAndAllocate() {
     if (isValid) {
       const {encryptedEmail} = await encryptEmail(email)
-      await marketplaceContract
-        .methods
-        .mintAndAllocate(`${params.id}`, `${(new BigNumber(10).pow(18).multipliedBy(+allocationAmountBusd)).toString()}`, encryptedEmail)
-        .send({from: account}).once('receipt', () => {
-          setIsLoading(false)
-          setEmail('')
-          setAllowance('')
-          collectionContext.setCollectionBubbleValue(collectionContext.bubbleCount + 1)
-        });
-
+      try {
+        await marketplaceContract
+          .methods
+          .mintAndAllocate(`${params.id}`, `${(new BigNumber(10).pow(18).multipliedBy(+allocationAmountBusd)).toString()}`, encryptedEmail)
+          .send({from: account}).once('receipt', () => {
+            setIsLoading(false)
+            setEmail('')
+            setAllowance('')
+            collectionContext.setCollectionBubbleValue(collectionContext.bubbleCount + 1)
+          });
+      } catch (e) {
+        setIsLoading(false)
+      }
     }
   }
 

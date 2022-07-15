@@ -3,6 +3,7 @@ import './index.css'
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {NFT} from "../../types";
+import {AllProjects} from "../../mocks/AllProjects";
 
 interface TextProps {
   fontSize: number
@@ -21,7 +22,7 @@ const TileWrapper = styled.div`
   cursor: pointer;
 `
 
-const Logo = styled.img`
+const Logo = styled.video`
   width: 67px;
   height: 67px;
   border: 3px solid #FFFFFF;
@@ -58,27 +59,29 @@ const GradientText = styled.div`
 `
 
 type NFTTilePropType = {
-    project: NFT[]
+  project: NFT[]
 }
 
 const NFTProjectTile = (props: NFTTilePropType) => {
-    const {project} = props
-    const imgRef = React.createRef<HTMLImageElement>()
-    const history = useHistory();
+  const {project} = props
+  const imgRef = React.createRef<HTMLImageElement>()
+  const history = useHistory();
 
-    return (
-        <TileWrapper onClick={() => history.push(`/projects/${project[0].name}`)}>
-          <LogoWrapper>
-            <Logo src={mockImage} ref={imgRef}/>
-            <GradientText>{project.length} NFT</GradientText>
-          </LogoWrapper>
-          <TextWrapper>
-            <Text fontSize={24} fontWeight={700} marginBottom={4}>{project[0].name}</Text>
-            <Text fontSize={12} fontWeight={400} marginBottom={8}>by Author.</Text>
-            <Text fontSize={16} fontWeight={400}>A promotion project. Buy your nft!</Text>
-          </TextWrapper>
-        </TileWrapper>
-    )
+  return (
+    <TileWrapper onClick={() => history.push(`/projects/${project[0].name}`)}>
+      <LogoWrapper>
+        <Logo autoPlay loop muted>
+          <source src={`/creative/Kraken_comp.mp4`} type="video/webm"/>
+        </Logo>
+        <GradientText>{project.length} NFT</GradientText>
+      </LogoWrapper>
+      <TextWrapper>
+        <Text fontSize={24} fontWeight={700} marginBottom={4}>{project[0].name}</Text>
+        <Text fontSize={12} fontWeight={400} marginBottom={8}>by Author.</Text>
+        {/*<Text fontSize={12} fontWeight={400}>{AllProjects[project[0].name].description}</Text>*/}
+      </TextWrapper>
+    </TileWrapper>
+  )
 };
 
 export default NFTProjectTile
