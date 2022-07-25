@@ -10,7 +10,7 @@ import Collection from "./pages/Collection";
 import CurrentNFT from "./pages/CurrentNFT";
 import CollectionContext from "./utils/CollectionContext";
 import {useWeb3React} from "@web3-react/core";
-import {useMarketplaceContract} from "./hooks/useMarketplaceContract";
+import {useAllocationMarketplaceContract} from "./hooks/useMarketplaceContract";
 import {useHistory} from 'react-router-dom';
 import BadNetworkError from "./pages/BadNetworkError";
 
@@ -18,14 +18,14 @@ const pages = [{title: 'Marketplace', url: '/projects'}, {title: 'Collection', u
 
 export const App = () => {
   const {account, active, chainId} = useWeb3React()
-  const marketplaceContract = useMarketplaceContract()
+  const marketplaceContract = useAllocationMarketplaceContract()
   const history = useHistory()
 
   const [collectionBubbleValue, setCollectionBubbleValue] = useState(0)
   const [collectionOpen, setCollectionOpen] = useState(false)
 
   async function updateUserBalance() {
-    const NFTIdsArray = await marketplaceContract.methods.getNfts(account).call()
+    const NFTIdsArray = await marketplaceContract.methods.getProjects().call()
     setCollectionBubbleValue(NFTIdsArray.length)
   }
 

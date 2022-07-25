@@ -3,7 +3,7 @@ import LocaleContext from "../../Standard/LocaleContext";
 import {NFT, ProjectsDict} from "../../types";
 import NFTTransferForm from "../../components/NFTTransferForm";
 import './index.css'
-import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
+import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
 import Cross from '../../icons/BigCross'
 import styled, {css} from "styled-components";
@@ -83,46 +83,46 @@ const Collection = (props: {isOpen?: boolean}) => {
   const [allProjects, setAllProjects] = useState<ProjectsDict>({})
   const {setCollectionOpen, collectionOpen} = useContext(CollectionContext)
 
-  const marketplaceContract = useMarketplaceContract()
+  const marketplaceContract = useAllocationMarketplaceContract()
   const history = useHistory()
 
-  async function getUserProjects() {
-    const NFTArrayFromContract: NFT[] = []
-
-    const NFTIdsArray = await marketplaceContract.methods.getNfts(account).call()
-
-    for (let i = 0; i < NFTIdsArray.length; i++) {
-      const newNftData = await marketplaceContract.methods.nftData(NFTIdsArray[i]).call()
-      NFTArrayFromContract.push(
-        {
-          active: true,
-          allocation: newNftData.allocatedAmount,
-          limit: 0,
-          name: newNftData.projectName,
-          price: newNftData.allocatedAmount,
-          projectId: newNftData.projectId,
-          totalBought: 0,
-          id: NFTIdsArray[i]
-        }
-      )
-    }
-
-    const newProjects: ProjectsDict = {}
-    NFTArrayFromContract.forEach(nft => {
-      if (newProjects[nft.name]) {
-        newProjects[nft.name] = [...newProjects[nft.name], nft]
-      } else {
-        newProjects[nft.name] = [nft]
-      }
-    })
-    setAllProjects(newProjects)
-  }
-
-  useEffect(() => {
-    if (active) {
-      getUserProjects()
-    }
-  }, [active, allProjects])
+  // async function getUserProjects() {
+  //   const NFTArrayFromContract: NFT[] = []
+  //
+  //   const NFTIdsArray = await marketplaceContract.methods.getNfts(account).call()
+  //
+  //   for (let i = 0; i < NFTIdsArray.length; i++) {
+  //     const newNftData = await marketplaceContract.methods.nftData(NFTIdsArray[i]).call()
+  //     NFTArrayFromContract.push(
+  //       {
+  //         active: true,
+  //         allocation: newNftData.allocatedAmount,
+  //         limit: 0,
+  //         name: newNftData.projectName,
+  //         price: newNftData.allocatedAmount,
+  //         projectId: newNftData.projectId,
+  //         totalBought: 0,
+  //         id: NFTIdsArray[i]
+  //       }
+  //     )
+  //   }
+  //
+  //   const newProjects: ProjectsDict = {}
+  //   NFTArrayFromContract.forEach(nft => {
+  //     if (newProjects[nft.name]) {
+  //       newProjects[nft.name] = [...newProjects[nft.name], nft]
+  //     } else {
+  //       newProjects[nft.name] = [nft]
+  //     }
+  //   })
+  //   setAllProjects(newProjects)
+  // }
+  //
+  // useEffect(() => {
+  //   if (active) {
+  //     getUserProjects()
+  //   }
+  // }, [active, allProjects])
 
   return (
     <div className={`Collection ${isOpen ? '': 'closed'}`}>

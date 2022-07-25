@@ -5,7 +5,7 @@ import {localized} from "../../Standard/utils/localized";
 import './index.css'
 import styled from "styled-components";
 import SimpleValidatedInput from "../SimpleValidatedInput";
-import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
+import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
 import Spinner from "../../Standard/components/Spinner";
 import {NFT} from "../../types";
@@ -76,7 +76,7 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
   const {locale} = useContext(LocaleContext)
   const {nft} = props
   const {account} = useWeb3React()
-  const marketplaceContract = useMarketplaceContract()
+  const marketplaceContract = useAllocationMarketplaceContract()
   const [transferAddress, setTransferAddress] = useState<string | undefined>(undefined)
   const [transferAddressValid, setTransferAddressValid] = useState(false)
 

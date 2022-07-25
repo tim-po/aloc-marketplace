@@ -66,19 +66,18 @@ const NFTProjectTile = (props: NFTTilePropType) => {
   const {project} = props
   const imgRef = React.createRef<HTMLImageElement>()
   const history = useHistory();
-
   return (
     <TileWrapper onClick={() => history.push(`/projects/${project[0].name}`)}>
       <LogoWrapper>
         <Logo autoPlay loop muted>
-          <source src={`/creative/Kraken_comp.mp4`} type="video/webm"/>
+          <source src={`${AllProjects[project[0].name].creativeLink}`} type="video/webm"/>
         </Logo>
         <GradientText>{project.length} NFT</GradientText>
       </LogoWrapper>
       <TextWrapper>
         <Text fontSize={24} fontWeight={700} marginBottom={4}>{project[0].name}</Text>
         <Text fontSize={12} fontWeight={400} marginBottom={8}>by Author.</Text>
-        {/*<Text fontSize={12} fontWeight={400}>{AllProjects[project[0].name].description}</Text>*/}
+        <Text fontSize={12} fontWeight={400}>{AllProjects[project[0].name].description}</Text>
       </TextWrapper>
     </TileWrapper>
   )

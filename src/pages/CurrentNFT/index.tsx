@@ -3,16 +3,16 @@ import texts from './localization'
 import LocaleContext from "../../Standard/LocaleContext";
 import "./index.css";
 import {localized} from "../../Standard/utils/localized";
-import {NFT} from "../../types";
+import {NFT, Token} from "../../types";
 import {wei2eth} from "../../Standard/utils/common";
 import SimpleValidatedInput from "../../components/SimpleValidatedInput";
 import BigNumber from "bignumber.js";
 import fromExponential from "from-exponential";
 import {useBalanceOfBUSD} from "../../hooks/useBalance";
 import {getAllocationMarketplaceContract} from "../../utils/getAddress";
-import {useBUSDContract} from "../../Standard/hooks/useCommonContracts";
+import {useBUSDContract, useContract, useWeb3} from "../../Standard/hooks/useCommonContracts";
 import {useWeb3React} from "@web3-react/core";
-import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
+import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import Spinner from "../../Standard/components/Spinner";
 import {useParams} from "react-router-dom";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
@@ -20,7 +20,10 @@ import NFTCountForm from "../../components/NFTCountForm";
 import Notification from "../../components/Notification";
 import styled from 'styled-components'
 import CollectionContext from "../../utils/CollectionContext";
-import { ArtworkImage, BoxShadowShiny } from "components/NFTTile/styled";
+import {ArtworkImage, BoxShadowShiny} from "components/NFTTile/styled";
+import {useNftContract} from "../../hooks/useNftContract";
+import CurrentNft from '../../contract/CurrentNft.json'
+import {AllProjects} from "../../mocks/AllProjects";
 
 const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
 const testEmailRegex = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
@@ -55,7 +58,7 @@ const NFTArtworkWrapper = styled.div`
   margin-right: 80px;
   border-radius: 30px;
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 800px) {
     margin-right: 0px;
     margin-bottom: 20px;
   }
@@ -73,7 +76,7 @@ const NFTCount = styled.div`
   font-weight: 700;
   font-size: 24px;
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 800px) {
     width: 350px;
   }
 `
@@ -84,7 +87,7 @@ const NFTCardWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   gap: 80px;
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 800px) {
     gap: 30px;
   }
 `
@@ -129,7 +132,7 @@ const CurrentNFT = () => {
   const params: { id: string } = useParams()
   const imgRef = React.createRef<HTMLImageElement>()
   const busdContract = useBUSDContract()
-  const marketplaceContract = useMarketplaceContract()
+  const marketplaceContract = useAllocationMarketplaceContract()
   const {account, active} = useWeb3React()
   const collectionContext = useContext(CollectionContext)
 
@@ -142,6 +145,8 @@ const CurrentNFT = () => {
   const [allocationAmountBusdValid, setAllocationAmountBusdValid] = useState(false)
 
   const [nft, setNft] = useState<NFT | undefined>(undefined)
+  const [token, setToken] = useState<Token | undefined>(undefined)
+  const currentNftContract = useNftContract(nft?.projectAddress)
 
   const [isLoading, setIsLoading] = useState(false)
   const [isApproveLoading, setIsApproveLoading] = useState(false)
@@ -158,17 +163,12 @@ const CurrentNFT = () => {
     allocationAmountBusd != '' &&
     new BigNumber(allocationAmountBusd).multipliedBy(1000000000000000000).isLessThanOrEqualTo(nft.allocation)
 
-
   const displayError = (text: string, time: number) => {
     setError(text)
     setTimeout(() => {
       setError("")
     }, time)
   }
-
-  useEffect(() => {
-    getNFT()
-  }, [])
 
   async function encryptEmail(email: string): Promise<{ encryptedEmail: string }> {
     const encryptEmailURL = 'https://encrypted-email-mmpro.herokuapp.com/encryptEmail'
@@ -182,20 +182,32 @@ const CurrentNFT = () => {
   }
 
   async function getNFT() {
-    const newNftData = await marketplaceContract.methods.projects(params.id).call()
+    const newNftData = await marketplaceContract.methods.projects(params.id.split('-')[0]).call()
     setNft(newNftData)
   }
+
+  async function getTokenInfo() {
+    const tokenInfo = await currentNftContract?.methods.tokensInfo(params.id.split('-')[1]).call()
+    setToken(tokenInfo)
+  }
+
+  useEffect(() => {
+    getTokenInfo()
+  }, [nft])
 
   const getAllowance = async (): Promise<string> => {
     return await busdContract
       .methods
-      .allowance(account, getAllocationMarketplaceContract())
+      // @ts-ignore
+      .allowance(account, nft.projectAddress)
       .call()
   }
 
   async function updateAllowance() {
-    const newAllowance = await getAllowance()
-    setAllowance(newAllowance)
+    if (nft) {
+      const newAllowance = await getAllowance()
+      setAllowance(newAllowance)
+    }
   }
 
   const approve = async () => {
@@ -207,13 +219,15 @@ const CurrentNFT = () => {
     setIsApproveLoading(true)
     const amount2eth = fromExponential(ALLOWANCE);
     try {
-      await busdContract
-        .methods
-        .approve(getAllocationMarketplaceContract(), amount2eth)
-        .send({from: account}).once('receipt', () => {
-          updateAllowance()
-          setIsApproveLoading(false)
-        });
+      if (nft) {
+        await busdContract
+          .methods
+          .approve(nft.projectAddress, amount2eth)
+          .send({from: account}).once('receipt', () => {
+            updateAllowance()
+            setIsApproveLoading(false)
+          });
+      }
     } catch (e) {
       setIsLoading(false)
     }
@@ -223,15 +237,17 @@ const CurrentNFT = () => {
     if (isValid) {
       const {encryptedEmail} = await encryptEmail(email)
       try {
-        await marketplaceContract
-          .methods
-          .mintAndAllocate(`${params.id}`, `${(new BigNumber(10).pow(18).multipliedBy(+allocationAmountBusd)).toString()}`, encryptedEmail)
-          .send({from: account}).once('receipt', () => {
-            setIsLoading(false)
-            setEmail('')
-            setAllowance('')
-            collectionContext.setCollectionBubbleValue(collectionContext.bubbleCount + 1)
-          });
+        if (currentNftContract) {
+          await currentNftContract
+            .methods
+            .mintAndAllocate(`${params.id}`, `${(new BigNumber(10).pow(18).multipliedBy(+allocationAmountBusd)).toString()}`, encryptedEmail)
+            .send({from: account}).once('receipt', () => {
+              setIsLoading(false)
+              setEmail('')
+              setAllowance('')
+              collectionContext.setCollectionBubbleValue(collectionContext.bubbleCount + 1)
+            });
+        }
       } catch (e) {
         setIsLoading(false)
       }
@@ -266,13 +282,17 @@ const CurrentNFT = () => {
 
   }
 
-  const isApprovalRequired = () => nft && (parseInt(allowance) < parseInt(nft.price.toString()))
+  const isApprovalRequired = () => token && (parseInt(allowance) < parseInt(token.price.toString()))
 
   useEffect(() => {
     if (active) {
       updateAllowance()
     }
   }, [active])
+
+  useEffect(() => {
+    getNFT()
+  }, [])
 
   if (!nft) {
     return null
@@ -283,16 +303,17 @@ const CurrentNFT = () => {
       <MarketplaceHeader title={nft.name} redirectTo={`/projects/${nft.name}`}/>
       <NFTCardWrapper>
         <BoxShadowShiny>
-          <ArtworkImage src={mockImage} maxWidth={430}/>
-          <NFTCountForm countOfNFT={+nft.limit - +nft.totalBought}/>
+          {/*@ts-ignore*/}
+          <ArtworkImage src={AllProjects[nft.name].nftsCreativeLinks[params.id.split('-')[1]]} maxWidth={430}/>
+          <NFTCountForm countOfNFT={token ? (+token.allocationLimit - +token.allocationAmount) : 0}/>
         </BoxShadowShiny>
         <div className="current-nft-form">
           <Text fontWeight={700} fontSize={40} marginBottom={40}>{nft.name}</Text>
-          <Text fontWeight={700} fontSize={24} marginBottom={20}>{`Base price: ${wei2eth(nft.price)} BUSD`}</Text>
+          <Text fontWeight={700} fontSize={24} marginBottom={20}>{`Base price: ${wei2eth(token?.price)} BUSD`}</Text>
           <Text fontWeight={700} fontSize={24}
-                marginBottom={40}>{`Max allocation: ${wei2eth(nft.allocation)} BUSD`}</Text>
+                marginBottom={40}>{`Max allocation: ${wei2eth(token?.maxAllocation)} BUSD`}</Text>
           {!account ?
-            <Notification body={'Please connect wallet to allocate'} />
+            <Notification body={'Please connect wallet to allocate'}/>
             :
             <>
               {
@@ -345,7 +366,7 @@ const CurrentNFT = () => {
                     >
                       Allocate
                       <SpinnerContainer>
-                        <Spinner color={'white'} size={isLoading ? 25: 0}/>
+                        <Spinner color={'white'} size={isLoading ? 25 : 0}/>
                       </SpinnerContainer>
                     </Button>
                   </>
