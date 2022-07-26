@@ -143,7 +143,7 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
         </SideWrapper>
         <TextWrapper>
           <Title>{title}</Title>
-          <Subtitle>{subtitle}</Subtitle>
+          {!(params.projectId || params.id) && <Subtitle>{subtitle}</Subtitle>}
         </TextWrapper>
         <SideWrapper>
           {/*<CollectionButton/>*/}

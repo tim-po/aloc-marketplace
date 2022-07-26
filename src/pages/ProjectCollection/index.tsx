@@ -6,6 +6,7 @@ import MarketplaceHeader from "../../components/MarketplaceHeader";
 import styled from "styled-components";
 import {useNftContract} from "../../hooks/useNftContract";
 import {AllProjects} from "../../mocks/AllProjects";
+import Spinner from "../../Standard/components/Spinner";
 
 type ProjectCollectionPropType = {
   name: string
@@ -38,7 +39,7 @@ const ProjectCollection = (props: ProjectCollectionPropType) => {
   const currentNftContract = useNftContract(project[0].projectAddress)
   const [nfts, setNfts] = useState<any>(undefined)
 
-  async function getAllProjects(){
+  async function getAllNfts(){
     const NFTArrayFromContract: NFT[] = []
     const newProjectsById: {[key: string]: string} = {}
     for (let i = 0; i < 9999; i++) {
@@ -54,13 +55,22 @@ const ProjectCollection = (props: ProjectCollectionPropType) => {
     setNfts(NFTArrayFromContract)
   }
 
-  useEffect(() => {getAllProjects()}, [])
+  useEffect(() => {
+    getAllNfts()
+  }, [])
 
   return (
     <ProjectCollectionPage>
       <MarketplaceHeader title={name} redirectTo={'/'}/>
       <ProjectCollectionContainer>
-        {nfts?.map((nft: any) => <NFTTileSimple key={nft.name} nft={nft}/>)}
+        {
+          nfts ?
+            <>
+              {nfts?.map((nft: any) => <NFTTileSimple key={nft.name} nft={nft}/>)}
+            </>
+            :
+            <Spinner color={'white'} size={25} />
+        }
       </ProjectCollectionContainer>
     </ProjectCollectionPage>
   )

@@ -45,7 +45,6 @@ const Main = () => {
     setAllProjects(newProjects)
   }
 
-
   useEffect(() => {
     getAllProjects()
   }, [])
