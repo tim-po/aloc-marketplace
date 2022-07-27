@@ -1,5 +1,5 @@
 import CurrentNft from "../contract/CurrentNft.json";
-import {useContract, useWeb3} from "../Standard/hooks/useCommonContracts";
+import {useWeb3} from "../Standard/hooks/useCommonContracts";
 
 export const useNftContract = (address: string | undefined) => {
   const abi = CurrentNft.abi;

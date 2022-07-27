@@ -1,12 +1,9 @@
 .Collection{
     width: 100%;
-    /*max-width: 1088px;*/
-    /*background: rgba(255, 255, 255, 0.25);*/
     background: #191932;
     height: 100%;
     padding: 20px 40px;
     position: relative;
-    /*flex-shrink: 2;*/
     border-radius: 40px 40px 0 0;
 
     display: flex;
@@ -21,7 +18,7 @@
     overflow: hidden !important;
 }
 
-@media screen and (max-width: 800px){
+@media screen and (max-width: 900px){
     .Collection{
         padding: 10px 20px;
         border-radius: 20px 20px 0 0;
@@ -32,7 +29,6 @@
     font-weight: bolder;
     font-size: 40px;
     margin-bottom: 40px;
-    /*position: fixed;*/
 }
 
 .projects-flex-collection{

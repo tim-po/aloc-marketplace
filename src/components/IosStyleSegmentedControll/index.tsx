@@ -1,17 +1,7 @@
-import React, {useContext, useState} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import React, {useState} from "react";
 import './index.css'
 
-// CONSTANTS
-
-// DEFAULT FUNCTIONS
-
-// TODO: copy this components directory and add your content to make your page
-
 type IosStyleSegmentedControllPropType = {
-    // You should declare props like this, delete this if you don't need props
     width: number;
     buttons: string[];
     firstSelectedIndex: number;

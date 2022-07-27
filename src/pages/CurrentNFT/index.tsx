@@ -1,16 +1,12 @@
 import React, {useContext, useEffect, useState} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
 import "./index.css";
-import {localized} from "../../Standard/utils/localized";
 import {NFT, Token} from "../../types";
 import {wei2eth} from "../../Standard/utils/common";
 import SimpleValidatedInput from "../../components/SimpleValidatedInput";
 import BigNumber from "bignumber.js";
 import fromExponential from "from-exponential";
 import {useBalanceOfBUSD} from "../../hooks/useBalance";
-import {getAllocationMarketplaceContract} from "../../utils/getAddress";
-import {useBUSDContract, useContract, useWeb3} from "../../Standard/hooks/useCommonContracts";
+import {useBUSDContract} from "../../Standard/hooks/useCommonContracts";
 import {useWeb3React} from "@web3-react/core";
 import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import Spinner from "../../Standard/components/Spinner";
@@ -22,12 +18,10 @@ import styled from 'styled-components'
 import CollectionContext from "../../utils/CollectionContext";
 import {ArtworkImage, BoxShadowShiny} from "components/NFTTile/styled";
 import {useNftContract} from "../../hooks/useNftContract";
-import CurrentNft from '../../contract/CurrentNft.json'
 import {AllProjects} from "../../mocks/AllProjects";
 import {getBUSDAddress, getMMProAddress} from "../../Standard/utils/getCommonAdress";
 import {usePancakeRouterContract} from "../../Standard/hooks/useCommonContracts";
 
-const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
 const testEmailRegex = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
 
 const INSUFFICIENT_BALANCE_ERROR_MESSAGE = "Insufficient balance";
@@ -35,9 +29,9 @@ const TRANSACTION_ERROR_MESSAGE = "Transaction failed";
 
 const ALLOWANCE = 10 ** 10 * 10 ** 18
 
-const SLIPPAGE_PERCENT = 0.93 // 7%
+const SLIPPAGE_PERCENT = 0.93
 
-const DEADLINE_OVER_NOW = 60 * 5 // 5 min
+const DEADLINE_OVER_NOW = 1000
 
 interface TextProps {
   fontSize: number
@@ -56,44 +50,14 @@ const CurrentNFTContainer = styled.div`
   flex-direction: column;
 `
 
-const NFTArtworkWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-  margin-right: 80px;
-  border-radius: 30px;
-
-  @media screen and (max-width: 800px) {
-    margin-right: 0px;
-    margin-bottom: 20px;
-  }
-`
-
-const NFTCount = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 430px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
-  border-radius: 0 0 30px 30px;
-  font-weight: 700;
-  font-size: 24px;
-
-  @media screen and (max-width: 800px) {
-    width: 350px;
-  }
-`
-
 const NFTCardWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
   justify-content: center;
   gap: 80px;
-  @media screen and (max-width: 800px) {
+  
+  @media screen and (max-width: 900px) {
     gap: 30px;
   }
 `
@@ -132,11 +96,8 @@ const SpinnerContainer = styled.div`
   right: 10px;
 `
 
-
 const CurrentNFT = () => {
-  const {locale} = useContext(LocaleContext)
   const params: { id: string } = useParams()
-  const imgRef = React.createRef<HTMLImageElement>()
   const busdContract = useBUSDContract()
   const marketplaceContract = useAllocationMarketplaceContract()
   const pancakeRouterContract = usePancakeRouterContract();
@@ -211,7 +172,7 @@ const CurrentNFT = () => {
   }
 
   async function updateAllowance() {
-    if (nft) {
+    if (token && nft) {
       const newAllowance = await getAllowance()
       setAllowance(newAllowance)
     }
@@ -259,7 +220,7 @@ const CurrentNFT = () => {
       const amountOutMin = (await getMinAmountOut()).multipliedBy(SLIPPAGE_PERCENT).toFixed(0).toString()
       const allocationAmount = (new BigNumber(10).pow(18).multipliedBy(+allocationAmountBusd)).toString()
       const deadline = getDeadline()
-      console.log(tokenId, amountOutMin , allocationAmount , deadline)
+
       try {
         if (currentNftContract && tokenId.toString() && amountOutMin && allocationAmount && deadline) {
           await currentNftContract
@@ -274,6 +235,7 @@ const CurrentNFT = () => {
               setIsLoading(false)
               setEmail('')
               setAllowance('')
+              getNFT()
               collectionContext.setCollectionBubbleValue(collectionContext.bubbleCount + 1)
             });
         }
@@ -309,16 +271,15 @@ const CurrentNFT = () => {
       console.log({error: e})
     }
     setIsLoading(false)
-
   }
 
-  const isApprovalRequired = () => token && (parseInt(allowance) < parseInt(token.price.toString()))
+  const isApprovalRequired =  () => token && (parseInt(allowance) < parseInt(token.price.toString()))
 
   useEffect(() => {
     if (active) {
       updateAllowance()
     }
-  }, [active])
+  }, [active, token, nft])
 
   useEffect(() => {
     getNFT()
@@ -333,8 +294,10 @@ const CurrentNFT = () => {
       <MarketplaceHeader title={nft.name} redirectTo={`/projects/${nft.name}`}/>
       <NFTCardWrapper>
         <BoxShadowShiny>
-          {/*@ts-ignore*/}
-          <ArtworkImage src={AllProjects[nft.name].nftsCreativeLinks[params.id.split('-')[1]]} maxWidth={430}/>
+          <ArtworkImage maxWidth={430} autoPlay loop muted>
+            {/*@ts-ignore*/}
+            <source src={AllProjects[nft.name].nftsCreativeLinks[params.id.split('-')[1]]}/>
+          </ArtworkImage>
           <NFTCountForm countOfNFT={token ? (+token.allocationLimit - +token.allocationAmount) : 0}/>
         </BoxShadowShiny>
         <div className="current-nft-form">
@@ -342,65 +305,59 @@ const CurrentNFT = () => {
           <Text fontWeight={700} fontSize={24} marginBottom={20}>{`Base price: ${wei2eth(token?.price)} BUSD`}</Text>
           <Text fontWeight={700} fontSize={24}
                 marginBottom={40}>{`Max allocation: ${wei2eth(token?.maxAllocation)} BUSD`}</Text>
-          {!account ?
-            <Notification body={'Please connect wallet to allocate'}/>
-            :
-            <>
+          {!account && <Notification body={'Please connect wallet to allocate'}/>}
+          {account && isApprovalRequired() &&
+            <Button
+              textColor={'#fff'}
+              background={'#33CC66'}
+              onClick={approve}
+            >
+              Approve
               {
-                isApprovalRequired()
-                  ?
-                  <Button
-                    textColor={'#fff'}
-                    background={'#33CC66'}
-                    onClick={approve}
-                  >
-                    Approve
-                    {
-                      isApproveLoading ?
-                        <SpinnerContainer>
-                          <Spinner color={'white'} size={25}/>
-                        </SpinnerContainer>
-                        :
-                        null
-                    }
-                  </Button>
+                isApproveLoading ?
+                  <SpinnerContainer>
+                    <Spinner color={'white'} size={25}/>
+                  </SpinnerContainer>
                   :
-                  <>
-                    <SimpleValidatedInput
-                      className="w-full"
-                      onChange={(e) => setEmail(e.target.value)}
-                      onValidationChange={(isValid) => setEmailValid(isValid)}
-                      validationFunction={(text) => testEmailRegex.test(text)}
-                      errorTooltipText={'Please enter a correct email'}
-                      placeholder="Email"
-                      type="email"
-                      autocomplete="email"
-                    />
-                    <SimpleValidatedInput
-                      hasDefaultValueButton
-                      defaultValueButtonText={'Max'}
-                      defaultValue={wei2eth(token?.price).toString()}
-                      shouldValidateOnInput
-                      className="w-full"
-                      placeholder="Your allocation in BUSD"
-                      onChange={(e) => setAllocationAmountBusd(e.target.value)}
-                      onValidationChange={(isValid) => setAllocationAmountBusdValid(isValid)}
-                      validationFunction={(text) => !isNaN(+text) && text != ''}
-                      errorTooltipText={'Please enter a number'}
-                    />
-                    <Button
-                      marginTop={21}
-                      textColor={isValid ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
-                      background={isValid ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
-                      onClick={handleBuy}
-                    >
-                      Allocate
-                      <SpinnerContainer>
-                        <Spinner color={'white'} size={isLoading ? 25 : 0}/>
-                      </SpinnerContainer>
-                    </Button>
-                  </>
+                  null
               }
+            </Button>
+          }
+          {account && !isApprovalRequired() &&
+            <>
+              <SimpleValidatedInput
+                className="w-full"
+                onChange={(e) => setEmail(e.target.value)}
+                onValidationChange={(isValid) => setEmailValid(isValid)}
+                validationFunction={(text) => testEmailRegex.test(text)}
+                errorTooltipText={'Please enter a correct email'}
+                placeholder="Email"
+                type="email"
+                autocomplete="email"
+              />
+              <SimpleValidatedInput
+                hasDefaultValueButton
+                defaultValueButtonText={'Max'}
+                defaultValue={wei2eth(token?.price).toString()}
+                shouldValidateOnInput
+                className="w-full"
+                placeholder="Your allocation in BUSD"
+                onChange={(e) => setAllocationAmountBusd(e.target.value)}
+                onValidationChange={(isValid) => setAllocationAmountBusdValid(isValid)}
+                validationFunction={(text) => !isNaN(+text) && text != ''}
+                errorTooltipText={'Please enter a number'}
+              />
+              <Button
+                marginTop={21}
+                textColor={isValid ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
+                background={isValid ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
+                onClick={handleBuy}
+              >
+                Allocate
+                <SpinnerContainer>
+                  <Spinner color={'white'} size={isLoading ? 25 : 0}/>
+                </SpinnerContainer>
+              </Button>
             </>
           }
         </div>

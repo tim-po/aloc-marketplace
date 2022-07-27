@@ -1,29 +1,17 @@
-import React, {ReactChild, useContext} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import React, {ReactChild} from "react";
 import './index.css'
 import {NFT} from "../../types";
 
-// CONSTANTS
-
-// DEFAULT FUNCTIONS
 
 type NftProjectCointainerPropType = {
-  // You should declare props like this, delete this if you don't need props
   name: string,
   children: ReactChild | ReactChild[]
-  // somePropWithDefaultOption?: string
 }
 
-const NftProjectCointainerDefaultProps = {
-  // You should declare default props like this, delete this if you don't need props
-  // somePropWithDefaultOption: 'default value'
-}
+const NftProjectCointainerDefaultProps = {}
 
 const NftProjectContainer = (props: NftProjectCointainerPropType) => {
   const {name, children} = props
-  const {locale} = useContext(LocaleContext)
 
   return (
     <div className={'NftProjectCointainer'}>

@@ -1,7 +1,4 @@
 import React, {useContext, useEffect, useState} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
 import './index.css'
 import styled, {css} from 'styled-components'
 import {useHistory, useLocation, useParams} from "react-router-dom";
@@ -22,7 +19,7 @@ const Container = styled.div`
   padding: 20px 40px;
   width: 100%;
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     justify-content: center;
     margin-bottom: 20px;
   }
@@ -40,7 +37,7 @@ const Title = styled.div`
   font-size: 40px;
   letter-spacing: 5px;
   
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     font-size: 24px;
     margin-top: 0px;
   }
@@ -51,20 +48,20 @@ const Subtitle = styled.div`
   font-size: 24px;
   letter-spacing: 2px;
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     font-size: 16px;
   }
 `
 
 const SideWrapper = styled.div`
   width: 183px;
-  @media screen and (max-width: 800px){
+  
+  @media screen and (max-width: 900px){
     display: none;
   }
 `
 
 const CollectionWrapper = styled.div<{isOpen?: boolean}>`
-  //transition: all 0.8s;
   position: fixed;
   bottom: 0px;
   z-index: 2;
@@ -75,7 +72,6 @@ const CollectionWrapper = styled.div<{isOpen?: boolean}>`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  //background: #ff1d5e;
   ${(props)=> (props.isOpen && css`
     height: calc(100% - 90px);
   `)};
@@ -110,7 +106,6 @@ const MarketplaceHeaderDefaultProps = {
 }
 
 const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
-  const {locale} = useContext(LocaleContext)
   const {title, subtitle, redirectTo} = props
   const [isBackArrowRendered, setIsBackArrowRendered] = useState<boolean>(false)
   const history = useHistory()

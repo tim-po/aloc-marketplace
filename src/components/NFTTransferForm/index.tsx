@@ -1,7 +1,4 @@
-import React, {useContext, useState} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import React, {useState} from "react";
 import './index.css'
 import styled from "styled-components";
 import SimpleValidatedInput from "../SimpleValidatedInput";
@@ -73,7 +70,6 @@ const FlexWrapper = styled.div`
 `
 
 const NFTTransferForm = (props: NFTTransferFormPropType) => {
-  const {locale} = useContext(LocaleContext)
   const {nft} = props
   const {account} = useWeb3React()
   const marketplaceContract = useAllocationMarketplaceContract()

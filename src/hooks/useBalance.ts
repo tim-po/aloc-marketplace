@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 import {useBUSDContract, useMMProContract} from "../Standard/hooks/useCommonContracts";
 import {useWeb3React} from "@web3-react/core";
 
@@ -18,11 +18,6 @@ export const useBalanceOfToken = (tokenContract: any): {balance: string, balance
         }
 
     }, [tokenContract, account, active])
-
-    // useEffect(() => {
-    //
-    //     updateBalance().then()
-    // }, [updateBalance])
 
     return {balance, balanceLoading, updateBalance}
 };

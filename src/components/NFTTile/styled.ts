@@ -7,12 +7,12 @@ interface NFTArtworkProps {
 }
 
 
-export const ArtworkImage = styled.img<NFTArtworkProps>`
+export const ArtworkImage = styled.video<NFTArtworkProps>`
   max-width: ${p=> p.maxWidth || 430}px;
   width: 100%;
   border-radius: 30px 30px 0 0;
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     max-width: ${p=> p.maxWidthMobile || 350}px;
   }
 `

@@ -1,13 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
-import LocaleContext from "../../Standard/LocaleContext";
+import React from "react";
 import './index.css'
 import {wei2eth} from "../../Standard/utils/common";
 import {useHistory} from "react-router-dom";
 import {NFT, Token} from "../../types";
 import styled from "styled-components"
-import {useNftContract} from "../../hooks/useNftContract";
-import {AllProjects} from "../../mocks/AllProjects";
-
 
 type NFTTilePropType = {
   nft: any,
@@ -40,7 +36,7 @@ const NFTProjectLimit = styled.div`
   border-radius: 10px;
 `
 
-const NFTProjectArtwork = styled.img`
+const NFTProjectArtwork = styled.video`
   width: 340px;
   height: 320px;
   overflow: hidden;
@@ -55,7 +51,7 @@ const NFTProjectArtwork = styled.img`
     transform: scale(1.2)
   }
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     transform: scale(1) !important;
   }
 `
@@ -76,27 +72,14 @@ const NFTTileDefaultProps = {}
 
 const NFTTileSimple = (props: NFTTilePropType) => {
   const {nft} = props
-  const {locale} = useContext(LocaleContext)
-  const imgRef = React.createRef<HTMLImageElement>()
   const history = useHistory();
-
-  const [token, setToken] = useState<Token | undefined>(undefined)
-  const currentNftContract = useNftContract(nft?.projectAddress)
-
-  async function getTokenInfo() {
-    const tokenInfo = await currentNftContract?.methods.tokensInfo(nft.projectId).call()
-    setToken(tokenInfo)
-  }
-
-  console.log(nft)
-  useEffect(() => {
-    getTokenInfo()
-  }, [nft])
 
   return (
     <FlexWrapper>
       <NFTTileWrapper onClick={() => history.push(`/nfts/${nft.projectId}-${nft.nftId}`)}>
-        <NFTProjectArtwork ref={imgRef} className={'nft-project-artwork'} src={`${nft.nftCreativeLink}`}/>
+        <NFTProjectArtwork autoPlay loop muted>
+          <source src={`${nft.nftCreativeLink}`} type="video/webm"/>
+        </NFTProjectArtwork>
         <NFTProjectLimit className={'nft-project-name'}>{`Only ${+nft.allocationLimit - +nft.allocationAmount} left `}</NFTProjectLimit>
       </NFTTileWrapper>
       <Price>{`${wei2eth(nft.price)} BUSD`}</Price>

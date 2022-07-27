@@ -1,7 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
 import LocaleContext from "../../Standard/LocaleContext";
-import {NFT, ProjectsDict} from "../../types";
-import NFTTransferForm from "../../components/NFTTransferForm";
 import './index.css'
 import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
@@ -19,9 +17,9 @@ const Title = styled.div<{ open: boolean }>`
   width: max-content;
   margin: auto;
   margin-top: 0;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 900px) {
     transition: all 0.2s;
     width: 100%;
     font-size: 24px;
@@ -71,16 +69,14 @@ const MobileCollectionOpenButton = styled.button`
   position: absolute;
   top: 0;
   z-index: 10;
-  
+
 `
 
-const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
-
-const Collection = (props: {isOpen?: boolean}) => {
+const Collection = (props: { isOpen?: boolean }) => {
   const {locale} = useContext(LocaleContext)
   const {isOpen} = props
   const {account, active} = useWeb3React()
-  const [allProjects, setAllProjects] = useState<ProjectsDict>({})
+  const [allProjects, setAllProjects] = useState<any>({})
   const {setCollectionOpen, collectionOpen} = useContext(CollectionContext)
 
   const marketplaceContract = useAllocationMarketplaceContract()
@@ -119,13 +115,11 @@ const Collection = (props: {isOpen?: boolean}) => {
   // }
   //
   // useEffect(() => {
-  //   if (active) {
-  //     getUserProjects()
-  //   }
-  // }, [active, allProjects])
+  //
+  // }, [])
 
   return (
-    <div className={`Collection ${isOpen ? '': 'closed'}`}>
+    <div className={`Collection ${isOpen ? '' : 'closed'}`}>
       <MobileCollectionOpenButton onClick={() => setCollectionOpen(true)}/>
       {(collectionOpen || isOpen) &&
         <CloseButton onClick={() => {
@@ -136,31 +130,31 @@ const Collection = (props: {isOpen?: boolean}) => {
         </CloseButton>
       }
       <Title open={collectionOpen}>Collection</Title>
-      {account ?
-        <>
-          <div className={'projects-flex-collection'}>
-            {Object.keys(allProjects).map((name) => {
-              return (
-                <NftProjectContainer key={name} name={name}>
-                  {allProjects[name].map((nft, index) => {
-                    return (
-                      <BoxShadowShiny key={name + index}>
-                        <ArtworkImage src={mockImage} maxWidth={350}/>
-                        <NFTTransferForm nft={nft}/>
-                      </BoxShadowShiny>
-                    )
-                  })}
-                </NftProjectContainer>
-              )
-            })}
-          </div>
-        </>
-        :
-        <>
-          <div style={{marginTop: 40}} />
-          <Notification body={'Please connect wallet to see the collection'}/>
-        </>
-      }
+      {/*{account ?*/}
+      {/*  <>*/}
+      {/*    <div className={'projects-flex-collection'}>*/}
+      {/*      {Object.keys(allProjects).map((name) => {*/}
+      {/*        return (*/}
+      {/*          <NftProjectContainer key={name} name={name}>*/}
+      {/*            {allProjects[name].map((nft, index) => {*/}
+      {/*              return (*/}
+      {/*                <BoxShadowShiny key={name + index}>*/}
+      {/*                  <ArtworkImage src={mockImage} maxWidth={350}/>*/}
+      {/*                  <NFTTransferForm nft={nft}/>*/}
+      {/*                </BoxShadowShiny>*/}
+      {/*              )*/}
+      {/*            })}*/}
+      {/*          </NftProjectContainer>*/}
+      {/*        )*/}
+      {/*      })}*/}
+      {/*    </div>*/}
+      {/*  </>*/}
+      {/*  :*/}
+      {/*  <>*/}
+      {/*    <div style={{marginTop: 40}} />*/}
+      {/*    <Notification body={'Please connect wallet to see the collection'}/>*/}
+      {/*  </>*/}
+      {/*}*/}
     </div>
   )
 };

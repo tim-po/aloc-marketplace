@@ -28,7 +28,7 @@ const ProjectCollectionContainer = styled.div`
   justify-content: center;
   gap: 40px;
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 900px) {
     justify-content: center;
   }
 `
@@ -66,7 +66,7 @@ const ProjectCollection = (props: ProjectCollectionPropType) => {
         {
           nfts ?
             <>
-              {nfts?.map((nft: any) => <NFTTileSimple key={nft.name} nft={nft}/>)}
+              {nfts?.map((nft: any) => <NFTTileSimple key={nft.nftId} nft={nft}/>)}
             </>
             :
             <Spinner color={'white'} size={25} />

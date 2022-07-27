@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import './index.css'
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {NFT} from "../../types";
 import {AllProjects} from "../../mocks/AllProjects";
+import {useNftContract} from "../../hooks/useNftContract";
 
 interface TextProps {
   fontSize: number
@@ -62,8 +63,29 @@ type NFTTilePropType = {
 
 const NFTProjectTile = (props: NFTTilePropType) => {
   const {project} = props
-  const imgRef = React.createRef<HTMLImageElement>()
   const history = useHistory();
+  const [countOfNft, setCountOfNft] = useState<number>()
+  const currentNftContract = useNftContract(project[0].projectAddress)
+
+  async function getAllNfts(){
+    const NFTArrayFromContract: NFT[] = []
+    const newProjectsById: {[key: string]: string} = {}
+    for (let i = 0; i < 9999; i++) {
+      let newProject: NFT
+      try {
+        newProject = {...(await currentNftContract?.methods.tokensInfo(i).call()), nftId: i, nftCreativeLink: AllProjects[project[0].name].nftsCreativeLinks[i], projectId: project[0].projectId}
+      } catch {
+        break
+      }
+      newProjectsById[i] = newProject.name
+      NFTArrayFromContract.push(newProject)
+    }
+    setCountOfNft(NFTArrayFromContract.length)
+  }
+
+  useEffect(() => {
+    getAllNfts()
+  }, [])
 
   return (
     <TileWrapper onClick={() => history.push(`/projects/${project[0].name}`)}>
@@ -71,7 +93,7 @@ const NFTProjectTile = (props: NFTTilePropType) => {
         <Logo autoPlay loop muted>
           <source src={`${AllProjects[project[0].name].creativeLink}`} type="video/webm"/>
         </Logo>
-        <GradientText>{project.length} NFT</GradientText>
+        <GradientText>{countOfNft} NFT</GradientText>
       </LogoWrapper>
       <TextWrapper>
         <Text fontSize={24} fontWeight={700} marginBottom={4}>{project[0].name}</Text>

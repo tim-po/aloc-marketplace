@@ -1,17 +1,8 @@
-import React, {useContext, useState} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import React, {useState} from "react";
 import './index.css'
 
-// CONSTANTS
-
-// DEFAULT FUNCTIONS
-
-// TODO: copy this components directory and add your content to make your page
 
 type SimpleValidatedInputPropType = {
-    // You should declare props like this, delete this if you don't need props
     placeholder?: string
     className?: string
     type?: string
@@ -30,7 +21,6 @@ type SimpleValidatedInputPropType = {
 
 
 const SimpleValidatedInputDefaultProps = {
-    // You should declare default props like this, delete this if you don't need props
     placeholder: '',
     type: 'text',
     errorTooltipText: 'Wrong input',
