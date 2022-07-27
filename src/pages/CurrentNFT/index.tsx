@@ -24,6 +24,8 @@ import {ArtworkImage, BoxShadowShiny} from "components/NFTTile/styled";
 import {useNftContract} from "../../hooks/useNftContract";
 import CurrentNft from '../../contract/CurrentNft.json'
 import {AllProjects} from "../../mocks/AllProjects";
+import {getBUSDAddress, getMMProAddress} from "../../Standard/utils/getCommonAdress";
+import {usePancakeRouterContract} from "../../Standard/hooks/useCommonContracts";
 
 const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
 const testEmailRegex = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
@@ -32,6 +34,10 @@ const INSUFFICIENT_BALANCE_ERROR_MESSAGE = "Insufficient balance";
 const TRANSACTION_ERROR_MESSAGE = "Transaction failed";
 
 const ALLOWANCE = 10 ** 10 * 10 ** 18
+
+const SLIPPAGE_PERCENT = 0.93 // 7%
+
+const DEADLINE_OVER_NOW = 60 * 5 // 5 min
 
 interface TextProps {
   fontSize: number
@@ -133,6 +139,7 @@ const CurrentNFT = () => {
   const imgRef = React.createRef<HTMLImageElement>()
   const busdContract = useBUSDContract()
   const marketplaceContract = useAllocationMarketplaceContract()
+  const pancakeRouterContract = usePancakeRouterContract();
   const {account, active} = useWeb3React()
   const collectionContext = useContext(CollectionContext)
 
@@ -143,7 +150,6 @@ const CurrentNFT = () => {
   const [emailValid, setEmailValid] = useState(false)
   const [allocationAmountBusd, setAllocationAmountBusd] = useState<string | undefined>(undefined)
   const [allocationAmountBusdValid, setAllocationAmountBusdValid] = useState(false)
-
   const [nft, setNft] = useState<NFT | undefined>(undefined)
   const [token, setToken] = useState<Token | undefined>(undefined)
   const currentNftContract = useNftContract(nft?.projectAddress)
@@ -154,6 +160,7 @@ const CurrentNFT = () => {
   const [error, setError] = useState("")
 
   const isValid =
+    token &&
     nft &&
     emailValid &&
     allocationAmountBusdValid &&
@@ -161,7 +168,7 @@ const CurrentNFT = () => {
     allocationAmountBusd != undefined &&
     email != '' &&
     allocationAmountBusd != '' &&
-    new BigNumber(allocationAmountBusd).multipliedBy(1000000000000000000).isLessThanOrEqualTo(nft.allocation)
+    new BigNumber(allocationAmountBusd).multipliedBy(1000000000000000000).isLessThanOrEqualTo(token.maxAllocation)
 
   const displayError = (text: string, time: number) => {
     setError(text)
@@ -233,15 +240,37 @@ const CurrentNFT = () => {
     }
   };
 
+  const getMinAmountOut = async () => {
+    const path = [getBUSDAddress(), getMMProAddress()]
+    return new BigNumber((await pancakeRouterContract
+      .methods
+      .getAmountsOut(allocationAmountBusd, path)
+      .call())[1])
+  }
+
+  const getDeadline = () => {
+    return Math.floor(new Date().getTime() / 1000) + DEADLINE_OVER_NOW;
+  }
+
   async function mintAndAllocate() {
     if (isValid) {
-      const {encryptedEmail} = await encryptEmail(email)
+      // const {encryptedEmail} = await encryptEmail(email)
+      const tokenId = +params.id.split('-')[1]
+      const amountOutMin = (await getMinAmountOut()).multipliedBy(SLIPPAGE_PERCENT).toFixed(0).toString()
+      const allocationAmount = (new BigNumber(10).pow(18).multipliedBy(+allocationAmountBusd)).toString()
+      const deadline = getDeadline()
+      console.log(tokenId, amountOutMin , allocationAmount , deadline)
       try {
-        if (currentNftContract) {
+        if (currentNftContract && tokenId.toString() && amountOutMin && allocationAmount && deadline) {
           await currentNftContract
             .methods
-            .mintAndAllocate(`${params.id}`, `${(new BigNumber(10).pow(18).multipliedBy(+allocationAmountBusd)).toString()}`, encryptedEmail)
-            .send({from: account}).once('receipt', () => {
+            .mintAndAllocate(
+              tokenId.toString(),
+              amountOutMin,
+              deadline,
+              allocationAmount,
+              []
+            ).send({from: account}).once('receipt', () => {
               setIsLoading(false)
               setEmail('')
               setAllowance('')
@@ -249,6 +278,7 @@ const CurrentNFT = () => {
             });
         }
       } catch (e) {
+        console.log(e)
         setIsLoading(false)
       }
     }
@@ -264,7 +294,7 @@ const CurrentNFT = () => {
     }
 
 
-    if (nft && parseInt(nft.price.toString()) > parseInt(balance)) {
+    if (nft && token && parseInt(token.price.toString()) > parseInt(balance)) {
       displayError(INSUFFICIENT_BALANCE_ERROR_MESSAGE, 2000);
       return
     }
@@ -349,7 +379,7 @@ const CurrentNFT = () => {
                     <SimpleValidatedInput
                       hasDefaultValueButton
                       defaultValueButtonText={'Max'}
-                      defaultValue={wei2eth(nft.allocation).toString()}
+                      defaultValue={wei2eth(token?.price).toString()}
                       shouldValidateOnInput
                       className="w-full"
                       placeholder="Your allocation in BUSD"
@@ -362,7 +392,7 @@ const CurrentNFT = () => {
                       marginTop={21}
                       textColor={isValid ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
                       background={isValid ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
-                      onClick={() => handleBuy()}
+                      onClick={handleBuy}
                     >
                       Allocate
                       <SpinnerContainer>
