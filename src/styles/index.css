@@ -22,7 +22,7 @@
 @tailwind components;
 
 body {
-    font-family: "Helvetica";
+    font-family: Helvetica;
     font-style: normal;
     color: white;
     background: white;
@@ -38,21 +38,6 @@ header {
     height: 84px;
     margin: 0px auto;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.font-Montserrat {
-    font-family: "Montserrat";
-    font-style: normal;
-}
-
-.font-Montserrat-ExtraBold {
-    font-family: "Montserrat-ExtraBold";
-    font-style: normal;
-}
-
-.Montserrat-Black {
-    font-family: "Montserrat-Black";
-    font-style: normal;
 }
 
 .main-gradient {

@@ -35,7 +35,7 @@ const NFTTransferFormContainer = styled.div`
   align-items: center;
   flex-direction: column;
   max-width: 100%;
-  height: 130px;
+  height: 60px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 0 0 30px 30px;
   padding: 8px 12px;
@@ -109,28 +109,6 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
       <Text fontWeight={400} marginBottom={14}>
         Allocation: <Text fontWeight={700}>{`${wei2eth(nft.allocation)} BUSD`}</Text>
       </Text>
-      <FlexWrapper>
-        <SimpleValidatedInput
-          className="w-full"
-          onChange={(e) => setTransferAddress(e.target.value)}
-          onValidationChange={(isValid) => setTransferAddressValid(isValid)}
-          validationFunction={(text) => testAddressRegex.test(text)}
-          errorTooltipText={'Please enter a correct address'}
-          placeholder="Transfer address"
-        />
-        <Button
-          background={isValidForTransfer ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
-          textColor={isValidForTransfer ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
-          onClick={transfer}
-        >
-          {
-            isLoading ?
-              <Spinner color={'white'} size={25}/>
-              :
-              'Transfer'
-          }
-        </Button>
-      </FlexWrapper>
     </NFTTransferFormContainer>
   )
 };

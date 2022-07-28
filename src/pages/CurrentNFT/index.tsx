@@ -21,6 +21,8 @@ import Notification from "../../components/Notification";
 import styled from 'styled-components'
 import CollectionContext from "../../utils/CollectionContext";
 import { ArtworkImage, BoxShadowShiny } from "components/NFTTile/styled";
+import SimpleInput from "../../Standard/components/SimpleInput";
+import useValidatedState, {validationFuncs} from "../../Standard/hooks/useValidatedState";
 
 const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
 const testEmailRegex = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
@@ -136,10 +138,8 @@ const CurrentNFT = () => {
   const {balance, balanceLoading, updateBalance} = useBalanceOfBUSD()
 
   const [allowance, setAllowance] = useState<string>('0')
-  const [email, setEmail] = useState<string | undefined>(undefined)
-  const [emailValid, setEmailValid] = useState(false)
-  const [allocationAmountBusd, setAllocationAmountBusd] = useState<string | undefined>(undefined)
-  const [allocationAmountBusdValid, setAllocationAmountBusdValid] = useState(false)
+  const [[email, setEmail], emailValid] = useValidatedState<string>("", validationFuncs.isEmail)
+  const [[allocationAmountBusd, setAllocationAmountBusd], allocationAmountBusdValid] = useValidatedState<string>('', newValue => !isNaN(+newValue) && (!nft || +newValue <= wei2eth(nft.allocation)))
 
   const [nft, setNft] = useState<NFT | undefined>(undefined)
 
@@ -315,27 +315,33 @@ const CurrentNFT = () => {
                   </Button>
                   :
                   <>
-                    <SimpleValidatedInput
-                      className="w-full"
-                      onChange={(e) => setEmail(e.target.value)}
-                      onValidationChange={(isValid) => setEmailValid(isValid)}
-                      validationFunction={(text) => testEmailRegex.test(text)}
+                    <SimpleInput
+                      onChangeRaw={setEmail}
+                      isValid={email === "" || emailValid}
+                      required
                       errorTooltipText={'Please enter a correct email'}
-                      placeholder="Email"
-                      type="email"
-                      autocomplete="email"
+                      autoComplete="email"
+                      inputProps={{
+                        className: 'w-full',
+                        placeholder: 'Email',
+                        type: 'email',
+                        value: email
+                      }}
                     />
-                    <SimpleValidatedInput
+                    <SimpleInput
                       hasDefaultValueButton
                       defaultValueButtonText={'Max'}
                       defaultValue={wei2eth(nft.allocation).toString()}
-                      shouldValidateOnInput
-                      className="w-full"
-                      placeholder="Your allocation in BUSD"
-                      onChange={(e) => setAllocationAmountBusd(e.target.value)}
-                      onValidationChange={(isValid) => setAllocationAmountBusdValid(isValid)}
-                      validationFunction={(text) => !isNaN(+text) && text != ''}
-                      errorTooltipText={'Please enter a number'}
+                      required
+                      onChangeRaw={setAllocationAmountBusd}
+                      isValid={allocationAmountBusd === "" || allocationAmountBusdValid}
+                      // validationFunction={(text) => !isNaN(+text) && text != ''}
+                      errorTooltipText={'Amount cannot exceed max allocation'}
+                     inputProps={{
+                       className: 'w-full',
+                       placeholder: 'Your allocation in BUSD',
+                       value: allocationAmountBusd
+                     }}
                     />
                     <Button
                       marginTop={21}

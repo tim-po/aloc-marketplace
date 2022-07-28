@@ -67,7 +67,7 @@ const CollectionWrapper = styled.div<{isOpen?: boolean}>`
   //transition: all 0.8s;
   position: fixed;
   bottom: 0px;
-  z-index: 2;
+  z-index: 4;
   //max-width: 1088px;
   width: 100%;
   height: 0;
