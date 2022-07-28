@@ -21,6 +21,9 @@ import {useNftContract} from "../../hooks/useNftContract";
 import {AllProjects} from "../../mocks/AllProjects";
 import {getBUSDAddress, getMMProAddress} from "../../Standard/utils/getCommonAdress";
 import {usePancakeRouterContract} from "../../Standard/hooks/useCommonContracts";
+import NotificationContext from "../../Standard/utils/NotificationContext";
+
+import NotificationIcon from '../../Standard/icons/notificationIcon/index'
 
 const testEmailRegex = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
 
@@ -119,6 +122,8 @@ const CurrentNFT = () => {
   const [isApproveLoading, setIsApproveLoading] = useState(false)
 
   const [error, setError] = useState("")
+
+  const notificationContext = useContext(NotificationContext)
 
   const isValid =
     token &&
@@ -240,13 +245,31 @@ const CurrentNFT = () => {
             });
         }
       } catch (e) {
-        console.log(e)
+        notificationContext.displayNotification(
+          'Transaction Failed',
+          'Please try again later',
+          <NotificationIcon />
+        )
         setIsLoading(false)
       }
     }
   }
 
   const handleBuy = async () => {
+
+    const isBalanceValid =
+      token &&
+      allocationAmountBusd &&
+      (+allocationAmountBusd + parseInt(wei2eth(token.price).toString()) <= parseInt(wei2eth(balance).toString()))
+
+    if (!isBalanceValid) {
+      notificationContext.displayNotification(
+        'Insufficient balance',
+        '',
+        <NotificationIcon />
+      )
+    }
+
     if (isLoading) {
       return
     }
@@ -278,6 +301,7 @@ const CurrentNFT = () => {
   useEffect(() => {
     if (active) {
       updateAllowance()
+      updateBalance()
     }
   }, [active, token, nft])
 
