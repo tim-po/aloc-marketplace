@@ -41,6 +41,7 @@ export const App = () => {
 
   async function getAllProjects() {
     let newProjects: ProjectsDict = {}
+    console.log("loadingProjects")
     for (let i = 0; i < 99999; i++) {
       let newProject: NFT
       try {
