@@ -6,7 +6,6 @@ import fromExponential from "from-exponential";
 import {useBalanceOfBUSD} from "../../hooks/useBalance";
 import {useBUSDContract} from "../../Standard/hooks/useCommonContracts";
 import {useWeb3React} from "@web3-react/core";
-import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import Spinner from "../../Standard/components/Spinner";
 import {useParams} from "react-router-dom";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
@@ -23,6 +22,10 @@ import {getBUSDAddress, getMMProAddress} from "../../Standard/utils/getCommonAdr
 import {usePancakeRouterContract} from "../../Standard/hooks/useCommonContracts";
 import WalletConnectorBubbleContext from "../../Standard/WalletConnectorBubbleContext";
 import ProjectContext from "../../utils/ProjectsContext";
+
+import NotificationContext from "../../Standard/utils/NotificationContext";
+
+import NotificationIcon from '../../Standard/icons/notificationIcon/index'
 
 
 const INSUFFICIENT_BALANCE_ERROR_MESSAGE = "Insufficient balance";
@@ -112,9 +115,6 @@ const CurrentNFT = () => {
   const [[email, setEmail], emailValid] = useValidatedState<string>("", validationFuncs.isEmail)
   const [[allocationAmountBusd, setAllocationAmountBusd], allocationAmountBusdValid] = useValidatedState<string>('', newValue => !isNaN(+newValue) && (!token || +newValue <= wei2eth(token.maxAllocation)))
 
-  console.log(params.id.split("-")[0])
-  console.log(projects)
-
   const project = projects[params.id.split("-")[0]]
   const token = (project && project.tokens) ? project.tokens[+params.id.split("-")[1]]: undefined
   const currentNftContract = useNftContract(project ? project.projectAddress: undefined)
@@ -122,7 +122,7 @@ const CurrentNFT = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isApproveLoading, setIsApproveLoading] = useState(false)
 
-  const [error, setError] = useState("")
+  const notificationContext = useContext(NotificationContext)
 
   const isValid =
     token &&
@@ -135,32 +135,16 @@ const CurrentNFT = () => {
     allocationAmountBusd != '' &&
     new BigNumber(allocationAmountBusd).multipliedBy(1000000000000000000).isLessThanOrEqualTo(token.maxAllocation)
 
-  const displayError = (text: string, time: number) => {
-    setError(text)
-    setTimeout(() => {
-      setError("")
-    }, time)
-  }
-
-  async function encryptEmail(email: string): Promise<{ encryptedEmail: string }> {
-    const encryptEmailURL = 'https://encrypted-email-mmpro.herokuapp.com/encryptEmail'
-    const requestOptions = {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email: email})
-    };
-    return fetch(encryptEmailURL, requestOptions)
-      .then(response => response.json())
-  }
-
-  // async function getTokenInfo() {
-  //   const tokenInfo = await currentNftContract?.methods.tokensInfo(params.id.split('-')[1]).call()
-  //   setToken(tokenInfo)
+  // async function encryptEmail(email: string): Promise<{ encryptedEmail: string }> {
+    // const encryptEmailURL = 'https://encrypted-email-mmpro.herokuapp.com/encryptEmail'
+    // const requestOptions = {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify({email: email})
+    // };
+    // return fetch(encryptEmailURL, requestOptions)
+    //   .then(response => response.json())
   // }
-  //
-  // useEffect(() => {
-  //   getTokenInfo()
-  // }, [nft])
 
   const getAllowance = async (): Promise<string> => {
     return await busdContract
@@ -241,12 +225,33 @@ const CurrentNFT = () => {
         }
       } catch (e) {
         console.log(e)
+        notificationContext.displayNotification(
+          'Transaction Failed',
+          'Please try again later',
+          <NotificationIcon />
+        )
         setIsLoading(false)
       }
     }
   }
 
   const handleBuy = async () => {
+    setBubbleValue("EMPTY")
+    setAccentedControlButton(2)
+    const isBalanceValid =
+      token &&
+      allocationAmountBusd &&
+      (+allocationAmountBusd + parseInt(wei2eth(token.price).toString()) <= parseInt(wei2eth(balance).toString()))
+
+    if (!isBalanceValid) {
+      notificationContext.displayNotification(
+        'Insufficient balance',
+        '',
+        <NotificationIcon />
+      )
+      return
+    }
+
     if (isLoading) {
       return
     }
@@ -255,19 +260,11 @@ const CurrentNFT = () => {
       return
     }
 
-
-    if (project && token && parseInt(token.price.toString()) > parseInt(balance)) {
-      displayError(INSUFFICIENT_BALANCE_ERROR_MESSAGE, 2000);
-      return
-    }
-
     setIsLoading(true)
     try {
       await mintAndAllocate()
       await updateBalance()
-      setError("")
     } catch (e) {
-      displayError(TRANSACTION_ERROR_MESSAGE, 2000)
       console.log({error: e})
     }
     setIsLoading(false)
@@ -278,6 +275,7 @@ const CurrentNFT = () => {
   useEffect(() => {
     if (active) {
       updateAllowance()
+      updateBalance()
     }
   }, [active, token, project])
 

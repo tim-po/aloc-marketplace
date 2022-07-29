@@ -71,12 +71,6 @@ const FlexWrapper = styled.div`
 
 const NFTTransferForm = (props: NFTTransferFormPropType) => {
   const {nft} = props
-  const {account} = useWeb3React()
-  const marketplaceContract = useAllocationMarketplaceContract()
-  const [transferAddress, setTransferAddress] = useState<string | undefined>(undefined)
-  const [transferAddressValid, setTransferAddressValid] = useState(false)
-
-  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <NFTTransferFormContainer>

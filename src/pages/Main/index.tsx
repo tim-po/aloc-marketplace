@@ -1,7 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {NFT, ProjectsDict} from "../../types";
 import './index.css'
-import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import NFTProjectTile from "../../components/NFTProjectTile";
 import {useParams} from "react-router-dom";
 import ProjectCollection from "../ProjectCollection";

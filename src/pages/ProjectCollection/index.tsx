@@ -1,11 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import './index.css';
-import {NFT, ProjectsDict, Token} from "../../types";
+import {NFT, Token} from "../../types";
 import NFTTileSimple from "../../components/NFTTileSimple";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
 import styled from "styled-components";
-import {useNftContract} from "../../hooks/useNftContract";
-import {AllProjects} from "../../mocks/AllProjects";
 import Spinner from "../../Standard/components/Spinner";
 
 type ProjectCollectionPropType = {

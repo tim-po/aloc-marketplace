@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import LocaleContext from "../../Standard/LocaleContext";
 import './index.css'
-import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
 import Cross from '../../icons/BigCross'
 import styled, {css} from "styled-components";
@@ -83,48 +82,10 @@ const Collection = (props: { isOpen?: boolean }) => {
   const {setBubbleValue} = useContext(WalletConnectorBubbleContext)
 
   const {isOpen} = props
-  const {account, active} = useWeb3React()
-  const [allProjects, setAllProjects] = useState<any>({})
+  const {account} = useWeb3React()
   const {setCollectionOpen, collectionOpen} = useContext(CollectionContext)
 
-  const marketplaceContract = useAllocationMarketplaceContract()
   const history = useHistory()
-
-  // async function getUserProjects() {
-  //   const NFTArrayFromContract: NFT[] = []
-  //
-  //   const NFTIdsArray = await marketplaceContract.methods.getNfts(account).call()
-  //
-  //   for (let i = 0; i < NFTIdsArray.length; i++) {
-  //     const newNftData = await marketplaceContract.methods.nftData(NFTIdsArray[i]).call()
-  //     NFTArrayFromContract.push(
-  //       {
-  //         active: true,
-  //         allocation: newNftData.allocatedAmount,
-  //         limit: 0,
-  //         name: newNftData.projectName,
-  //         price: newNftData.allocatedAmount,
-  //         projectId: newNftData.projectId,
-  //         totalBought: 0,
-  //         id: NFTIdsArray[i]
-  //       }
-  //     )
-  //   }
-  //
-  //   const newProjects: ProjectsDict = {}
-  //   NFTArrayFromContract.forEach(nft => {
-  //     if (newProjects[nft.name]) {
-  //       newProjects[nft.name] = [...newProjects[nft.name], nft]
-  //     } else {
-  //       newProjects[nft.name] = [nft]
-  //     }
-  //   })
-  //   setAllProjects(newProjects)
-  // }
-  //
-  // useEffect(() => {
-  //
-  // }, [])
 
   useEffect(()=>{
     if(isOpen){
