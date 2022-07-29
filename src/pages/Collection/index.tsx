@@ -1,9 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import LocaleContext from "../../Standard/LocaleContext";
-import {NFT, ProjectsDict} from "../../types";
-import NFTTransferForm from "../../components/NFTTransferForm";
 import './index.css'
-import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
+import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
 import Cross from '../../icons/BigCross'
 import styled, {css} from "styled-components";
@@ -12,6 +10,11 @@ import Notification from "../../components/Notification";
 import {ArtworkImage, BoxShadowShiny} from "../../components/NFTTile/styled";
 import NftProjectContainer from "../../components/NftProjectContainer";
 import {useHistory} from "react-router-dom";
+import ProjectsContext from "../../utils/ProjectsContext";
+import {Token} from "../../types";
+import {AllProjects} from "../../mocks/AllProjects";
+import NFTTransferForm from "../../components/NFTTransferForm";
+import WalletConnectorBubbleContext from "../../Standard/WalletConnectorBubbleContext";
 
 const Title = styled.div<{ open: boolean }>`
   font-weight: 700;
@@ -19,9 +22,9 @@ const Title = styled.div<{ open: boolean }>`
   width: max-content;
   margin: auto;
   margin-top: 0;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 900px) {
     transition: all 0.2s;
     width: 100%;
     font-size: 24px;
@@ -71,61 +74,66 @@ const MobileCollectionOpenButton = styled.button`
   position: absolute;
   top: 0;
   z-index: 10;
-  
+
 `
 
-const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
-
-const Collection = (props: {isOpen?: boolean}) => {
+const Collection = (props: { isOpen?: boolean }) => {
   const {locale} = useContext(LocaleContext)
+  const {projects} = useContext(ProjectsContext)
+  const {setBubbleValue} = useContext(WalletConnectorBubbleContext)
+
   const {isOpen} = props
   const {account, active} = useWeb3React()
-  const [allProjects, setAllProjects] = useState<ProjectsDict>({})
+  const [allProjects, setAllProjects] = useState<any>({})
   const {setCollectionOpen, collectionOpen} = useContext(CollectionContext)
 
-  const marketplaceContract = useMarketplaceContract()
+  const marketplaceContract = useAllocationMarketplaceContract()
   const history = useHistory()
 
-  async function getUserProjects() {
-    const NFTArrayFromContract: NFT[] = []
+  // async function getUserProjects() {
+  //   const NFTArrayFromContract: NFT[] = []
+  //
+  //   const NFTIdsArray = await marketplaceContract.methods.getNfts(account).call()
+  //
+  //   for (let i = 0; i < NFTIdsArray.length; i++) {
+  //     const newNftData = await marketplaceContract.methods.nftData(NFTIdsArray[i]).call()
+  //     NFTArrayFromContract.push(
+  //       {
+  //         active: true,
+  //         allocation: newNftData.allocatedAmount,
+  //         limit: 0,
+  //         name: newNftData.projectName,
+  //         price: newNftData.allocatedAmount,
+  //         projectId: newNftData.projectId,
+  //         totalBought: 0,
+  //         id: NFTIdsArray[i]
+  //       }
+  //     )
+  //   }
+  //
+  //   const newProjects: ProjectsDict = {}
+  //   NFTArrayFromContract.forEach(nft => {
+  //     if (newProjects[nft.name]) {
+  //       newProjects[nft.name] = [...newProjects[nft.name], nft]
+  //     } else {
+  //       newProjects[nft.name] = [nft]
+  //     }
+  //   })
+  //   setAllProjects(newProjects)
+  // }
+  //
+  // useEffect(() => {
+  //
+  // }, [])
 
-    const NFTIdsArray = await marketplaceContract.methods.getNfts(account).call()
-
-    for (let i = 0; i < NFTIdsArray.length; i++) {
-      const newNftData = await marketplaceContract.methods.nftData(NFTIdsArray[i]).call()
-      NFTArrayFromContract.push(
-        {
-          active: true,
-          allocation: newNftData.allocatedAmount,
-          limit: 0,
-          name: newNftData.projectName,
-          price: newNftData.allocatedAmount,
-          projectId: newNftData.projectId,
-          totalBought: 0,
-          id: NFTIdsArray[i]
-        }
-      )
+  useEffect(()=>{
+    if(isOpen){
+      setBubbleValue("")
     }
-
-    const newProjects: ProjectsDict = {}
-    NFTArrayFromContract.forEach(nft => {
-      if (newProjects[nft.name]) {
-        newProjects[nft.name] = [...newProjects[nft.name], nft]
-      } else {
-        newProjects[nft.name] = [nft]
-      }
-    })
-    setAllProjects(newProjects)
-  }
-
-  useEffect(() => {
-    if (active) {
-      getUserProjects()
-    }
-  }, [active, allProjects])
+  }, [isOpen])
 
   return (
-    <div className={`Collection ${isOpen ? '': 'closed'}`}>
+    <div className={`Collection ${isOpen ? '' : 'closed'}`}>
       <MobileCollectionOpenButton onClick={() => setCollectionOpen(true)}/>
       {(collectionOpen || isOpen) &&
         <CloseButton onClick={() => {
@@ -139,13 +147,19 @@ const Collection = (props: {isOpen?: boolean}) => {
       {account ?
         <>
           <div className={'projects-flex-collection'}>
-            {Object.keys(allProjects).map((name) => {
+            {Object.keys(projects).map((name) => {
+              const projectsWithAllocation = (projects[name].tokens || []).filter((nft: Token) => +nft.allocationAmount > 0)
+
+              if(projectsWithAllocation.length === 0){
+                return null
+              }
+
               return (
                 <NftProjectContainer key={name} name={name}>
-                  {allProjects[name].map((nft, index) => {
+                  {projectsWithAllocation.map((nft: Token, index: number) => {
                     return (
                       <BoxShadowShiny key={name + index}>
-                        <ArtworkImage src={mockImage} maxWidth={350}/>
+                        <ArtworkImage src={AllProjects[name].nftsCreativeLinks[index]} maxWidth={350}/>
                         <NFTTransferForm nft={nft}/>
                       </BoxShadowShiny>
                     )

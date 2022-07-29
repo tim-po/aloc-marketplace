@@ -1,14 +1,11 @@
-import React, {useContext, useState} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import React, {useState} from "react";
 import './index.css'
 import styled from "styled-components";
 import SimpleValidatedInput from "../SimpleValidatedInput";
-import {useMarketplaceContract} from "../../hooks/useMarketplaceContract";
+import {useAllocationMarketplaceContract} from "../../hooks/useMarketplaceContract";
 import {useWeb3React} from "@web3-react/core";
 import Spinner from "../../Standard/components/Spinner";
-import {NFT} from "../../types";
+import {NFT, Token} from "../../types";
 import {wei2eth} from "../../Standard/utils/common";
 
 interface TextProps {
@@ -22,7 +19,7 @@ interface ButtonProps {
 }
 
 type NFTTransferFormPropType = {
-  nft: NFT
+  nft: Token
 }
 
 const NFTTransferFormDefaultProps = {}
@@ -73,41 +70,18 @@ const FlexWrapper = styled.div`
 `
 
 const NFTTransferForm = (props: NFTTransferFormPropType) => {
-  const {locale} = useContext(LocaleContext)
   const {nft} = props
   const {account} = useWeb3React()
-  const marketplaceContract = useMarketplaceContract()
+  const marketplaceContract = useAllocationMarketplaceContract()
   const [transferAddress, setTransferAddress] = useState<string | undefined>(undefined)
   const [transferAddressValid, setTransferAddressValid] = useState(false)
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const isValidForTransfer =
-    transferAddressValid &&
-    transferAddress !== '' &&
-    nft.id
-
-  function transfer() {
-
-    if (isLoading) {
-      return
-    }
-
-    setIsLoading(true)
-
-    if (isValidForTransfer && nft.id) {
-      marketplaceContract.methods.safeTransferFrom(account, transferAddress, +nft.id, 1, '0x0')
-        .send({from: account})
-        .once('receipt', () => {
-          setIsLoading(false)
-        })
-    }
-  }
-
   return (
     <NFTTransferFormContainer>
       <Text fontWeight={400} marginBottom={14}>
-        Allocation: <Text fontWeight={700}>{`${wei2eth(nft.allocation)} BUSD`}</Text>
+        Allocation: <Text fontWeight={700}>{`${nft.allocationAmount} BUSD`}</Text>
       </Text>
     </NFTTransferFormContainer>
   )

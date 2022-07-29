@@ -1,7 +1,4 @@
-import React, {useContext} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import React from "react";
 import './index.css'
 import styled from 'styled-components'
 
@@ -53,7 +50,6 @@ const Text = styled.div<TextProps>`
 `
 
 const Notification = (props: NotificationPropType) => {
-  const {locale} = useContext(LocaleContext)
   const {body} = props
 
   return (

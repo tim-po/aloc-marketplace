@@ -1,7 +1,4 @@
-import React, {useContext} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import React from "react";
 import './index.css'
 import styled from "styled-components";
 
@@ -17,7 +14,7 @@ const NFTCount = styled.div`
   font-weight: 700;
   font-size: 24px;
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     width: 350px;
   }
 `
@@ -29,7 +26,6 @@ type NFTCountFormPropType = {
 const NFTCountFormDefaultProps = {}
 
 const NFTCountForm = (props: NFTCountFormPropType) => {
-  const {locale} = useContext(LocaleContext)
   const {countOfNFT} = props
 
   return <NFTCount>{`Only ${countOfNFT} left`}</NFTCount>

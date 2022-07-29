@@ -1,7 +1,4 @@
 import React, {useContext, useEffect, useState} from "react";
-import texts from './localization'
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
 import './index.css'
 import styled, {css} from 'styled-components'
 import {useHistory, useLocation, useParams} from "react-router-dom";
@@ -9,6 +6,7 @@ import BackArrowImg from '../../images/arrow.svg'
 import CollectionButton from "../CollectionButton";
 import Collection from "../../pages/Collection";
 import CollectionContext from "../../utils/CollectionContext";
+import WalletConnectorBubbleContext from "../../Standard/WalletConnectorBubbleContext";
 
 interface BackArrowProps {
   isBackArrowRendered: boolean
@@ -22,7 +20,7 @@ const Container = styled.div`
   padding: 20px 40px;
   width: 100%;
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     justify-content: center;
     margin-bottom: 20px;
   }
@@ -40,7 +38,7 @@ const Title = styled.div`
   font-size: 40px;
   letter-spacing: 5px;
   
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     font-size: 24px;
     margin-top: 0px;
   }
@@ -51,20 +49,20 @@ const Subtitle = styled.div`
   font-size: 24px;
   letter-spacing: 2px;
 
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: 900px){
     font-size: 16px;
   }
 `
 
 const SideWrapper = styled.div`
   width: 183px;
-  @media screen and (max-width: 800px){
+  
+  @media screen and (max-width: 900px){
     display: none;
   }
 `
 
 const CollectionWrapper = styled.div<{isOpen?: boolean}>`
-  //transition: all 0.8s;
   position: fixed;
   bottom: 0px;
   z-index: 4;
@@ -75,7 +73,6 @@ const CollectionWrapper = styled.div<{isOpen?: boolean}>`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  //background: #ff1d5e;
   ${(props)=> (props.isOpen && css`
     height: calc(100% - 90px);
   `)};
@@ -84,10 +81,10 @@ const CollectionWrapper = styled.div<{isOpen?: boolean}>`
   //   height: 50px;
   //   width: 100px;
   //   left: 0;
-  //   ${(props)=> (props.isOpen && css`
+  //   
   //     height: calc(100% - 100px);
   //     width: 100%;
-  //   `)};
+  //   
   // }
 `
 
@@ -110,7 +107,6 @@ const MarketplaceHeaderDefaultProps = {
 }
 
 const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
-  const {locale} = useContext(LocaleContext)
   const {title, subtitle, redirectTo} = props
   const [isBackArrowRendered, setIsBackArrowRendered] = useState<boolean>(false)
   const history = useHistory()
@@ -119,6 +115,7 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
   const params: { projectId?: string, id?: string} = useParams()
   const search = useLocation().search
   const collection = new URLSearchParams(search).get('collection');
+  const {setBubbleValue} = useContext(WalletConnectorBubbleContext)
 
   const checkBackArrowRendered = () => {
     if (params.projectId || params.id) {
@@ -143,7 +140,7 @@ const MarketplaceHeader = (props: MarketplaceHeaderPropType) => {
         </SideWrapper>
         <TextWrapper>
           <Title>{title}</Title>
-          <Subtitle>{subtitle}</Subtitle>
+          {!(params.projectId || params.id) && <Subtitle>{subtitle}</Subtitle>}
         </TextWrapper>
         <SideWrapper>
           {/*<CollectionButton/>*/}

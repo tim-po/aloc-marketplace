@@ -1,17 +1,16 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import './index.css'
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {NFT} from "../../types";
 import {AllProjects} from "../../mocks/AllProjects";
+import {useNftContract} from "../../hooks/useNftContract";
 
 interface TextProps {
   fontSize: number
   fontWeight: number
   marginBottom?: number
 }
-
-const mockImage = 'https://pbs.twimg.com/media/FEaFK4OWUAAlgiV.jpg'
 
 const TileWrapper = styled.div`
   display: flex;
@@ -59,26 +58,25 @@ const GradientText = styled.div`
 `
 
 type NFTTilePropType = {
-  project: NFT[]
+  project: NFT
 }
 
 const NFTProjectTile = (props: NFTTilePropType) => {
   const {project} = props
-  const imgRef = React.createRef<HTMLImageElement>()
   const history = useHistory();
+  const [countOfNft, setCountOfNft] = useState<number>((project.tokens || []).length)
 
   return (
-    <TileWrapper onClick={() => history.push(`/projects/${project[0].name}`)}>
+    <TileWrapper onClick={() => history.push(`/projects/${project.name}`)}>
       <LogoWrapper>
         <Logo autoPlay loop muted>
-          <source src={`/creative/Kraken_comp.mp4`} type="video/webm"/>
+          <source src={`${AllProjects[project.name].creativeLink}`} type="video/webm"/>
         </Logo>
-        <GradientText>{project.length} NFT</GradientText>
+        <GradientText>{countOfNft} NFT</GradientText>
       </LogoWrapper>
       <TextWrapper>
-        <Text fontSize={24} fontWeight={700} marginBottom={4}>{project[0].name}</Text>
-        <Text fontSize={12} fontWeight={400} marginBottom={8}>by Author.</Text>
-        {/*<Text fontSize={12} fontWeight={400}>{AllProjects[project[0].name].description}</Text>*/}
+        <Text fontSize={24} fontWeight={700} marginBottom={4}>{project.name}</Text>
+        <Text fontSize={12} fontWeight={400}>{AllProjects[project.name].description}</Text>
       </TextWrapper>
     </TileWrapper>
   )
