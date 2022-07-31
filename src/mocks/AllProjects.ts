@@ -61,7 +61,7 @@ export const AllProjects: AllProjectsDict = {
       'creative/krakenNfts/t5.mp4',
     ]
   },
-  ledger: {
+  "ledger": {
     name: "Ledger",
     description: "Dominating hardware crypto wallet developer",
     creativeLink: '/creative/Ledger_comp.mp4',
@@ -73,4 +73,16 @@ export const AllProjects: AllProjectsDict = {
       'creative/krakenNfts/t5.mp4',
     ]
   },
+  "Thrasio": {
+    name: "Thrasio",
+    description: "Dominating hardware crypto wallet developer",
+    creativeLink: '/creative/Ledger_comp.mp4',
+    nftsCreativeLinks: [
+      'creative/krakenNfts/t1.mp4',
+      'creative/krakenNfts/t2.mp4',
+      'creative/krakenNfts/t3.mp4',
+      'creative/krakenNfts/t4.mp4',
+      'creative/krakenNfts/t5.mp4',
+    ]
+  }
 }

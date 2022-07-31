@@ -41,7 +41,6 @@ export const App = () => {
 
   async function getAllProjects() {
     let newProjects: ProjectsDict = {}
-    console.log("loadingProjects")
     for (let i = 0; i < 99999; i++) {
       let newProject: NFT
       try {
@@ -52,9 +51,6 @@ export const App = () => {
       const tokens = await getAllNfts(newProject)
       newProjects[newProject.name] = {...newProject, tokens: tokens}
     }
-
-    console.log("newProjects")
-    console.log(newProjects)
     setAllProjects(newProjects)
   }
 
