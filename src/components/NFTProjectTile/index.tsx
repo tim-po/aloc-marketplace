@@ -76,7 +76,7 @@ const NFTProjectTile = (props: NFTTilePropType) => {
       </LogoWrapper>
       <TextWrapper>
         <Text fontSize={24} fontWeight={700} marginBottom={4}>{project.name}</Text>
-        <Text fontSize={12} fontWeight={400}>{AllProjects[project.name].description}</Text>
+        <Text fontSize={14} fontWeight={400}>{AllProjects[project.name].description}</Text>
       </TextWrapper>
     </TileWrapper>
   )
