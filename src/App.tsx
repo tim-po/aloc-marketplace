@@ -67,10 +67,16 @@ export const App = () => {
     for (let i = 0; i < 9999; i++) {
       let newProject: Token
       try {
-        newProject = {...(await newNftContract?.methods.tokensInfo(i).call()), nftId: i, nftCreativeLink: AllProjects[project.name].nftsCreativeLinks[i], projectId: project.projectId}
-      } catch {
+        newProject = {...(await newNftContract?.methods.tokensInfo(`${i}`).call()), nftId: i, nftCreativeLink: AllProjects[project.name].nftsCreativeLinks[i], projectId: project.projectId}
+
+        if(project.projectTypeId === "8" && account){
+          newProject = {...newProject, userAllocation: await newNftContract?.methods.userAllocation(`${i}`, account).call()}
+        }
+      } catch(e) {
+        console.log(e)
         break
       }
+
       NFTArrayFromContract.push(newProject)
     }
     return(NFTArrayFromContract)
@@ -78,7 +84,7 @@ export const App = () => {
 
   useEffect(() => {
     getAllProjects()
-  }, [])
+  }, [account])
 
   useEffect(() => {
     if (active) {

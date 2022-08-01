@@ -5,6 +5,7 @@ import NFTTileSimple from "../../components/NFTTileSimple";
 import MarketplaceHeader from "../../components/MarketplaceHeader";
 import styled from "styled-components";
 import Spinner from "../../Standard/components/Spinner";
+import {useParams} from "react-router-dom";
 
 type ProjectCollectionPropType = {
   project: NFT
@@ -31,19 +32,26 @@ const ProjectCollectionContainer = styled.div`
 `
 
 const ProjectCollection = (props: ProjectCollectionPropType) => {
+  const params: { projectId: string } = useParams()
   const {project} = props
 
   return (
     <ProjectCollectionPage>
-      <MarketplaceHeader title={project.name} redirectTo={'/'}/>
+      <MarketplaceHeader title={params.projectId} redirectTo={'/'}/>
       <ProjectCollectionContainer>
         {
-          project.tokens ?
+          (project && project.tokens) ?
             <>
               {project.tokens?.map((token: Token) => <NFTTileSimple key={token.nftId} projectName={project.name} token={token}/>)}
             </>
             :
-            <Spinner color={'white'} size={25} />
+            <>
+              <NFTTileSimple />
+              <NFTTileSimple />
+              <NFTTileSimple />
+              <NFTTileSimple />
+              <NFTTileSimple />
+            </>
         }
       </ProjectCollectionContainer>
     </ProjectCollectionPage>

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import './index.css'
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import styled from "styled-components";
 import {NFT} from "../../types";
 import {AllProjects} from "../../mocks/AllProjects";
@@ -66,17 +66,24 @@ const NFTProjectTile = (props: NFTTilePropType) => {
   const history = useHistory();
   const [countOfNft, setCountOfNft] = useState<number>((project.tokens || []).length)
 
+  const isSkeleton = (project.name === "")
+
   return (
-    <TileWrapper onClick={() => history.push(`/projects/${project.name}`)}>
+    <TileWrapper className={`${isSkeleton ? 'skeleton' : ''}`}
+                 onClick={() => history.push(`/projects/${project.name}`)}>
       <LogoWrapper>
         <Logo autoPlay loop muted>
-          <source src={`${AllProjects[project.name].creativeLink}`} type="video/webm"/>
+          {!isSkeleton &&
+            <source src={`${AllProjects[project.name].creativeLink}`} type="video/mp4"/>
+          }
         </Logo>
         <GradientText>{countOfNft} NFT</GradientText>
       </LogoWrapper>
       <TextWrapper>
         <Text fontSize={24} fontWeight={700} marginBottom={4}>{project.name}</Text>
-        <Text fontSize={14} fontWeight={400}>{AllProjects[project.name].description}</Text>
+        {!isSkeleton &&
+          <Text fontSize={14} fontWeight={400}>{!isSkeleton ? AllProjects[project.name].description : ''}</Text>
+        }
       </TextWrapper>
     </TileWrapper>
   )

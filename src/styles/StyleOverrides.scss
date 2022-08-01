@@ -1,3 +1,44 @@
+$base-color: rgba(204, 204, 204, 0.4);
+$shine-color: rgba(255, 255, 255, 0.45);
+
+.skeleton{
+    color: rgba(255, 255, 255, 0) !important;
+    background-image:
+            linear-gradient(-45deg, $base-color 0, $base-color 45%, $shine-color 50%, $base-color 55%, $base-color 100%) !important;
+    content: "" !important;
+    border: 1px solid rgba(128, 128, 128, 0) !important;
+    animation: shine-lines 2s infinite;
+    background-size: 400% 400% !important;
+    backdrop-filter: blur(30px);
+
+    &::placeholder{
+        opacity: 0 !important;
+    }
+
+    &::before{
+        opacity: 0;
+    }
+    &::after{
+        opacity: 0;
+    }
+
+    div, span, img, video, p, source{
+        opacity: 0 !important;
+    }
+}
+
+@keyframes shine-lines {
+    from{
+        background-position: right;
+    }
+    50%{
+        background-position: left;
+    }
+    to{
+        background-position: right;
+    }
+}
+
 .input-container.style-override {
     position: relative;
     .SimpleInput {
@@ -18,8 +59,8 @@
 
 
         &.not-valid {
-            border: none !important;
-            border-left: 6px solid red !important;
+            border: none;
+            border-left: 6px solid red;
         }
 
         &::placeholder {

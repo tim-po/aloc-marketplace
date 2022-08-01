@@ -236,8 +236,6 @@ const CurrentNFT = () => {
   }
 
   const handleBuy = async () => {
-    setBubbleValue("EMPTY")
-    setAccentedControlButton(2)
     const isBalanceValid =
       token &&
       allocationAmountBusd &&
@@ -279,32 +277,48 @@ const CurrentNFT = () => {
     }
   }, [active, token, project])
 
-  if (!project || !token) {
-    return null
-  }
+  // if (!project || !token) {
+  //   return (
+  //     <CurrentNFTContainer>
+  //       <MarketplaceHeader title={params.id} redirectTo={`/projects/${params.id}`}/>
+  //       <Spinner color={'white'} size={25} />
+  //     </CurrentNFTContainer>
+  //   )
+  // }
+
+  const isSkeleton = !project || !token
 
   return (
     <CurrentNFTContainer>
-      <MarketplaceHeader title={project.name} redirectTo={`/projects/${project.name}`}/>
+      <MarketplaceHeader title={params.id} redirectTo={`/projects/${params.id}`}/>
       <NFTCardWrapper>
-        <BoxShadowShiny>
+        <BoxShadowShiny className={`${isSkeleton ? "skeleton": ''}`}>
           <ArtworkImage maxWidth={430} autoPlay loop muted>
-            {/*@ts-ignore*/}
-            <source src={AllProjects[project.name].nftsCreativeLinks[params.id.split('-')[1]]}/>
+            {project &&
+              /*@ts-ignore*/
+              <source src={AllProjects[project.name].nftsCreativeLinks[params.id.split('-')[1]]}/>
+            }
           </ArtworkImage>
           <NFTCountForm countOfNFT={token ? (+token.allocationLimit - +token.allocationAmount) : 0}/>
         </BoxShadowShiny>
         <div className="current-nft-form">
-          <Text fontWeight={700} fontSize={40} marginBottom={40}>{project.name}</Text>
-          <Text fontWeight={700} fontSize={24} marginBottom={20}>{`Base price: ${wei2eth(token?.price)} BUSD`}</Text>
-          <Text fontWeight={700} fontSize={24}
-                marginBottom={40}>{`Max allocation: ${wei2eth(token?.maxAllocation)} BUSD`}</Text>
-          {!account && <Notification body={'Please connect wallet to allocate'}/>}
-          {account && isApprovalRequired() &&
+          <Text fontWeight={700} fontSize={40} marginBottom={40}>{params.id}</Text>
+          <Text fontWeight={700} fontSize={24} marginBottom={20} className={`${isSkeleton ? "skeleton": ''}`}>{`Base price: ${wei2eth(token ? token.price: 0)} BUSD`}</Text>
+          <Text
+            fontWeight={700}
+            fontSize={24}
+            marginBottom={40}
+            className={`${isSkeleton ? "skeleton": ''}`}
+          >
+            {`Max allocation: ${wei2eth(token ? token.maxAllocation: 0)} BUSD`}
+          </Text>
+          {(!account && !isSkeleton) && <Notification body={'Please connect wallet to allocate'}/>}
+          {(account && isApprovalRequired()) &&
             <Button
               textColor={'#fff'}
               background={'#33CC66'}
-              onClick={approve}
+              onClick={isSkeleton ? () => {}: approve}
+              className={`${isSkeleton ? "skeleton": ''}`}
             >
               Approve
               {isApproveLoading &&
@@ -314,7 +328,7 @@ const CurrentNFT = () => {
               }
             </Button>
           }
-          {account && !isApprovalRequired() &&
+          {(account && !isApprovalRequired()) &&
             <>
               <SimpleInput
                 onChangeRaw={setEmail}
@@ -323,7 +337,7 @@ const CurrentNFT = () => {
                 errorTooltipText={'Please enter a correct email'}
                 autoComplete="email"
                 inputProps={{
-                  className: 'w-full',
+                  className: `w-full ${isSkeleton ? "skeleton": ''}`,
                   placeholder: 'Email',
                   type: 'email',
                   value: email
@@ -332,14 +346,14 @@ const CurrentNFT = () => {
               <SimpleInput
                 hasDefaultValueButton
                 defaultValueButtonText={'Max'}
-                defaultValue={wei2eth(token.maxAllocation).toString()}
+                defaultValue={wei2eth(token ? token.maxAllocation: 0).toString()}
                 required
                 onChangeRaw={setAllocationAmountBusd}
                 isValid={allocationAmountBusd === "" || allocationAmountBusdValid}
                 // validationFunction={(text) => !isNaN(+text) && text != ''}
                 errorTooltipText={'Amount cannot exceed max allocation'}
                 inputProps={{
-                  className: 'w-full',
+                  className: `w-full ${isSkeleton ? "skeleton": ''}`,
                   placeholder: 'Your allocation in BUSD',
                   value: allocationAmountBusd
                 }}
@@ -348,7 +362,8 @@ const CurrentNFT = () => {
                 marginTop={21}
                 textColor={isValid ? '#fff' : 'rgba(255, 255, 255, 0.6)'}
                 background={isValid ? '#33CC66' : 'rgba(0, 0, 0, 0.2)'}
-                onClick={handleBuy}
+                onClick={isSkeleton ? ()=>{}: handleBuy}
+                className={`${isSkeleton ? "skeleton": ''}`}
               >
                 Allocate
                 <SpinnerContainer>

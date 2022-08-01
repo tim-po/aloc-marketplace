@@ -6,8 +6,8 @@ import {NFT, Token} from "../../types";
 import styled from "styled-components"
 
 type NFTTilePropType = {
-  token: Token,
-  projectName: string
+  token?: Token,
+  projectName?: string
 }
 
 
@@ -66,7 +66,8 @@ const FlexWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column
+  flex-direction: column;
+  border-radius: 20px;
 `
 
 const NFTTileDefaultProps = {}
@@ -76,14 +77,16 @@ const NFTTileSimple = (props: NFTTilePropType) => {
   const history = useHistory();
 
   return (
-    <FlexWrapper>
-      <NFTTileWrapper onClick={() => history.push(`/nfts/${projectName}-${token.nftId}`)}>
+    <FlexWrapper className={`${!token ? 'skeleton': ''}`}>
+      <NFTTileWrapper onClick={token ? () => history.push(`/nfts/${projectName}-${token.nftId}`): ()=>{}}>
         <NFTProjectArtwork autoPlay loop muted>
-          <source src={`${token.nftCreativeLink}`} type="video/webm"/>
+          {!!token &&
+            <source src={`${token.nftCreativeLink}`} type="video/webm"/>
+          }
         </NFTProjectArtwork>
-        <NFTProjectLimit className={'nft-project-name'}>{`Only ${+token.allocationLimit - +token.allocationAmount} left `}</NFTProjectLimit>
+        <NFTProjectLimit className={'nft-project-name'}>{`Only ${token ? (+token.allocationLimit - +token.allocationAmount): 0} left `}</NFTProjectLimit>
       </NFTTileWrapper>
-      <Price>{`${wei2eth(token.price)} BUSD`}</Price>
+      <Price>{`${wei2eth(token ? token.price: 0)} BUSD`}</Price>
     </FlexWrapper>
   )
 };

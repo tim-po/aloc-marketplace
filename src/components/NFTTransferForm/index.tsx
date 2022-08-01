@@ -75,7 +75,7 @@ const NFTTransferForm = (props: NFTTransferFormPropType) => {
   return (
     <NFTTransferFormContainer>
       <Text fontWeight={400} marginBottom={14}>
-        Allocation: <Text fontWeight={700}>{`${nft.allocationAmount} BUSD`}</Text>
+        Allocation: <Text fontWeight={700}>{`${wei2eth(nft.userAllocation)} BUSD`}</Text>
       </Text>
     </NFTTransferFormContainer>
   )

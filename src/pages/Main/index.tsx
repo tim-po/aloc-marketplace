@@ -18,7 +18,7 @@ const Main = () => {
 
   const {projects} = useContext(ProjectsContext)
 
-  if (params.projectId && projects[params.projectId]) {
+  if (params.projectId) {
     const project = projects[params.projectId]
     return <ProjectCollection project={project}/>
   }
@@ -33,7 +33,16 @@ const Main = () => {
               {Object.keys(projects).map((name) => <NFTProjectTile key={name} project={projects[name]}/>)}
             </>
             :
-            <Spinner color={'white'} size={25} />
+            <>
+              {/* @ts-ignore */}
+              <NFTProjectTile project={{name: ""}}/>
+              {/* @ts-ignore */}
+              <NFTProjectTile project={{name: ""}}/>
+              {/* @ts-ignore */}
+              <NFTProjectTile project={{name: ""}}/>
+              {/* @ts-ignore */}
+              <NFTProjectTile project={{name: ""}}/>
+            </>
           }
         </div>
       </Wrapper>

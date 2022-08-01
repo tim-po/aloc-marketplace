@@ -5,6 +5,7 @@ export type NFT = {
   name: string
   projectId: string,
   id?: number
+  projectTypeId: string
 
   tokens?: Token[]
 }
@@ -20,6 +21,7 @@ export type Token = {
   nftCreativeLink: string
   nftId: number
   projectId: number
+  userAllocation?: number
 }
 
 export type ProjectsDict = { [key: string]: NFT }

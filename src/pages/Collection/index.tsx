@@ -109,7 +109,10 @@ const Collection = (props: { isOpen?: boolean }) => {
         <>
           <div className={'projects-flex-collection'}>
             {Object.keys(projects).map((name) => {
-              const projectsWithAllocation = (projects[name].tokens || []).filter((nft: Token) => +nft.allocationAmount > 0)
+              const projectsWithAllocation = (projects[name].tokens || []).filter((nft: Token) => {
+                // console.log(nft.userAllocation)
+                return nft.userAllocation && +nft.userAllocation > 0
+              })
 
               if(projectsWithAllocation.length === 0){
                 return null
